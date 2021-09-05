@@ -2,7 +2,9 @@
 Yet another fast alternative for Java reflection
 
 ## Usage
-See the [tests for `FastMethod`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastMethodTest.java)
+See the tests:
+* [tests for `FastMethod`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastMethodTest.java)
+* [tests for `FastClass`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastClassTest.java)
 
 ## Performance Test
 Run `gradlew jmh` to get the performance test result.

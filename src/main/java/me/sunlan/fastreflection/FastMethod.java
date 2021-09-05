@@ -23,8 +23,12 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -57,14 +61,44 @@ import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_8;
 
 public abstract class FastMethod {
+    private final Method method;
+
+    public FastMethod(Method method) {
+        this.method = method;
+    }
+
+    public String getName() {
+        return method.getName();
+    }
+
+    public Class<?> getReturnType() {
+        return method.getReturnType();
+    }
+
+    public Class<?>[] getParameterTypes() {
+        return method.getParameterTypes();
+    }
+
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
 
-    public static FastMethod create(Method method) throws InstantiationException, IllegalAccessException {
+    public static FastMethod create(Method method) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         return create(method, new FastMethodLoader(Thread.currentThread().getContextClassLoader()));
     }
 
-    public static FastMethod create(Method method, ClassDefinable classDefiner) throws InstantiationException, IllegalAccessException {
-        String className = "me.sunlan.fastreflection.runtime.FastMethod" + System.nanoTime();
+    private static String md5(String str) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(str.getBytes());
+            byte[] digest = md.digest();
+
+            return new BigInteger(1, digest).toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e); // should never happen
+        }
+    }
+
+    public static FastMethod create(Method method, ClassDefinable classDefiner) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        String className = "me.sunlan.fastreflection.runtime.FastMethod_" + md5(method.toGenericString());
 //        long b = System.currentTimeMillis();
         byte[] bytes = gen(className, method);
 //        long m = System.currentTimeMillis();
@@ -73,7 +107,7 @@ public abstract class FastMethod {
         Class<?> fastMethodClass = classDefiner.defineClass(className, bytes);
 //        long e = System.currentTimeMillis();
 //        System.out.println("defineClass: " + (e - m) + "ms");
-        return (FastMethod) fastMethodClass.newInstance();
+        return (FastMethod) fastMethodClass.getConstructor(Method.class).newInstance(method);
     }
 
     private static byte[] gen(String className, Method method) {
@@ -91,16 +125,20 @@ public abstract class FastMethod {
         }
         final String classDescriptor = "L" + internalClassName + ";";
         {
-            mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+            mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/reflect/Method;)V", null, null);
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, FASTMETHOD_INTERNAL_NAME, "<init>", "()V", false);
-            mv.visitInsn(RETURN);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKESPECIAL, FASTMETHOD_INTERNAL_NAME, "<init>", "(Ljava/lang/reflect/Method;)V", false);
             Label label1 = new Label();
             mv.visitLabel(label1);
-            mv.visitLocalVariable("this", classDescriptor, null, label0, label1, 0);
+            mv.visitInsn(RETURN);
+            Label label2 = new Label();
+            mv.visitLabel(label2);
+            mv.visitLocalVariable("this", classDescriptor, null, label0, label2, 0);
+            mv.visitLocalVariable("method", "Ljava/lang/reflect/Method;", null, label0, label2, 1);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
         }
@@ -133,10 +171,14 @@ public abstract class FastMethod {
 
             String invokeExactMethodDescriptor = getMethodDescriptor(returnType, parameterTypeStream.toArray(Class[]::new));
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/invoke/MethodHandle", "invokeExact", invokeExactMethodDescriptor, false);
-            if (void.class != returnType && returnType.isPrimitive()) {
-                Class<?> returnTypeWrapper = getWrapper(returnType);
-                String valueOfMethodDescriptor = getMethodDescriptor(returnTypeWrapper, new Class[] { returnType });
-                mv.visitMethodInsn(INVOKESTATIC, getInternalName(returnTypeWrapper), "valueOf", valueOfMethodDescriptor, false);
+            if (void.class != returnType) {
+                if (returnType.isPrimitive()) {
+                    Class<?> returnTypeWrapper = getWrapper(returnType);
+                    String valueOfMethodDescriptor = getMethodDescriptor(returnTypeWrapper, new Class[] { returnType });
+                    mv.visitMethodInsn(INVOKESTATIC, getInternalName(returnTypeWrapper), "valueOf", valueOfMethodDescriptor, false);
+                }
+            } else {
+                mv.visitInsn(ACONST_NULL);
             }
             mv.visitInsn(ARETURN);
             Label label3 = new Label();
