@@ -1,5 +1,5 @@
 # fast-reflection
-Yet another fast alternative for Java reflection
+Yet another fast alternative for Java reflection, making dynamic calls as efficient as direct calls.
 
 ## Usage
 See the tests:
@@ -18,7 +18,6 @@ Run `gradlew jmh` to get the performance test result.
 * Timeout: 10 min per iteration
 * Threads: 1 thread, will synchronize iterations
 * Benchmark mode: Average time, time/op
-* Benchmark: me.sunlan.fastreflection.FastMethodPerfTest.direct_StringStartsWith
 
 ```
 Benchmark                                        Mode  Cnt   Score   Error  Units
