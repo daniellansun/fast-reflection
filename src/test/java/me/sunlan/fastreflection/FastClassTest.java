@@ -20,8 +20,13 @@ package me.sunlan.fastreflection;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FastClassTest {
@@ -55,7 +60,7 @@ class FastClassTest {
     }
 
     @Test
-    public void testGetMethodsMultipleTimes() throws Throwable {
+    public void testGetMethodsMultipleTimes() {
         FastClass fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getMethods();
         fms = fc.getMethods();
@@ -75,9 +80,27 @@ class FastClassTest {
     }
 
     @Test
-    public void testGetDeclaredMethodsMultipleTimes() throws Throwable {
+    public void testGetDeclaredMethodsMultipleTimes() {
         FastClass fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getDeclaredMethods();
         fms = fc.getDeclaredMethods();
+    }
+
+    @Test
+    public void testEqualsAndHashCode() {
+        Set<FastClass> fastClassSet = new HashSet<>();
+        FastClass fc1 = FastClass.create(String.class);
+        FastClass fc2 = FastClass.create(String.class);
+        fastClassSet.add(fc1);
+        fastClassSet.add(fc2);
+        assertEquals(1, fastClassSet.size());
+        assertSame(fc1, new ArrayList<>(fastClassSet).get(0));
+    }
+
+    @Test
+    public void testToString() {
+        Class<String> clazz = String.class;
+        FastClass fc = FastClass.create(clazz);
+        assertEquals(clazz.toString(), fc.toString());
     }
 }

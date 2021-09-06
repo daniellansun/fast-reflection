@@ -20,8 +20,14 @@ package me.sunlan.fastreflection;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FastMethodTest {
@@ -66,5 +72,23 @@ public class FastMethodTest {
         Object arg = new char[]{'1', '2', '3'};
         Object result = fm.invoke(null, arg);
         assertEquals("123", result);
+    }
+
+    @Test
+    public void testEqualsAndHashCode() throws NoSuchMethodException {
+        Set<FastMethod> fastMethodSet = new HashSet<>();
+        FastMethod fm1 = FastMethod.create(String.class.getMethod("startsWith", String.class));
+        FastMethod fm2 = FastMethod.create(String.class.getMethod("startsWith", String.class));
+        fastMethodSet.add(fm1);
+        fastMethodSet.add(fm2);
+        assertEquals(1, fastMethodSet.size());
+        assertSame(fm1, new ArrayList<>(fastMethodSet).get(0));
+    }
+
+    @Test
+    public void testToString() throws NoSuchMethodException {
+        Method startsWithMethod = String.class.getMethod("startsWith", String.class);
+        FastMethod fm = FastMethod.create(startsWithMethod);
+        assertEquals(fm.toString(), startsWithMethod.toString());
     }
 }

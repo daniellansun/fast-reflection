@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static me.sunlan.fastreflection.AsmUtils.cast;
@@ -60,15 +61,11 @@ import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_8;
 
-public abstract class FastMethod {
+public abstract class FastMethod implements FastMember {
     private final Method method;
 
     public FastMethod(Method method) {
         this.method = method;
-    }
-
-    public String getName() {
-        return method.getName();
     }
 
     public Class<?> getReturnType() {
@@ -237,6 +234,34 @@ public abstract class FastMethod {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e); // should never happen
         }
+    }
+
+    @Override
+    public String getName() {
+        return method.getName();
+    }
+
+    @Override
+    public int getModifiers() {
+        return method.getModifiers();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FastMethod)) return false;
+        FastMethod that = (FastMethod) o;
+        return method.equals(that.method);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(method);
+    }
+
+    @Override
+    public String toString() {
+        return method.toString();
     }
 
     private static final int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;

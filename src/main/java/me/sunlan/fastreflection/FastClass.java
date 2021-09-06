@@ -20,6 +20,7 @@ package me.sunlan.fastreflection;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FastClass {
@@ -51,7 +52,7 @@ public class FastClass {
         return doGetMethods(methods);
     }
 
-    private FastMethod[] doGetMethods(Method[] methods) {
+    private synchronized FastMethod[] doGetMethods(Method[] methods) {
         FastMethod[] fastMethods = new FastMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
@@ -63,6 +64,24 @@ public class FastClass {
     private FastClass(Class<?> clazz, ClassDefinable classDefiner) {
         this.clazz = clazz;
         this.classDefiner = classDefiner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FastClass)) return false;
+        FastClass fastClass = (FastClass) o;
+        return clazz.equals(fastClass.clazz);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clazz);
+    }
+
+    @Override
+    public String toString() {
+        return clazz.toString();
     }
 
     private final Class<?> clazz;
