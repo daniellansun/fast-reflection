@@ -68,6 +68,16 @@ public abstract class FastMethod implements FastMember {
         this.method = method;
     }
 
+    @Override
+    public String getName() {
+        return method.getName();
+    }
+
+    @Override
+    public int getModifiers() {
+        return method.getModifiers();
+    }
+
     public Class<?> getReturnType() {
         return method.getReturnType();
     }
@@ -234,16 +244,6 @@ public abstract class FastMethod implements FastMember {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e); // should never happen
         }
-    }
-
-    @Override
-    public String getName() {
-        return method.getName();
-    }
-
-    @Override
-    public int getModifiers() {
-        return method.getModifiers();
     }
 
     @Override

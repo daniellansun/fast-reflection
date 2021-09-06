@@ -91,4 +91,11 @@ public class FastMethodTest {
         FastMethod fm = FastMethod.create(startsWithMethod);
         assertEquals(fm.toString(), startsWithMethod.toString());
     }
+
+    @Test
+    public void testGetModifiers() throws NoSuchMethodException {
+        Method startsWithMethod = String.class.getMethod("startsWith", String.class);
+        FastMethod fm = FastMethod.create(startsWithMethod);
+        assertEquals(startsWithMethod.getModifiers(), fm.getModifiers());
+    }
 }

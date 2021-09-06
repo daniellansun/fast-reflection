@@ -103,4 +103,25 @@ class FastClassTest {
         FastClass fc = FastClass.create(clazz);
         assertEquals(clazz.toString(), fc.toString());
     }
+
+    @Test
+    public void testGetName() {
+        Class<String> clazz = String.class;
+        FastClass fc = FastClass.create(clazz);
+        assertEquals(clazz.getName(), fc.getName());
+    }
+
+    @Test
+    public void testGetSimpleName() {
+        Class<String> clazz = String.class;
+        FastClass fc = FastClass.create(clazz);
+        assertEquals(clazz.getSimpleName(), fc.getSimpleName());
+    }
+
+    @Test
+    public void testGetModifiers() {
+        Class<String> clazz = String.class;
+        FastClass fc = FastClass.create(clazz);
+        assertEquals(clazz.getModifiers(), fc.getModifiers());
+    }
 }

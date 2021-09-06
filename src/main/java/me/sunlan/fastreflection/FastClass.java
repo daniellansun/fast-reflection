@@ -32,6 +32,18 @@ public class FastClass {
         return new FastClass(clazz, classDefiner);
     }
 
+    public String getName() {
+        return clazz.getName();
+    }
+
+    public String getSimpleName() {
+        return clazz.getSimpleName();
+    }
+
+    public int getModifiers() {
+        return clazz.getModifiers();
+    }
+
     public FastMethod getMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method m = clazz.getMethod(name, parameterTypes);
         return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
