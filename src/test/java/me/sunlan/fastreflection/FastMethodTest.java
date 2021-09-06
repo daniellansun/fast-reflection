@@ -77,8 +77,9 @@ public class FastMethodTest {
     @Test
     public void testEqualsAndHashCode() throws NoSuchMethodException {
         Set<FastMethod> fastMethodSet = new HashSet<>();
-        FastMethod fm1 = FastMethod.create(String.class.getMethod("startsWith", String.class));
-        FastMethod fm2 = FastMethod.create(String.class.getMethod("startsWith", String.class));
+        FastMemberLoader fastMemberLoader = new FastMemberLoader();
+        FastMethod fm1 = FastMethod.create(String.class.getMethod("startsWith", String.class), fastMemberLoader);
+        FastMethod fm2 = FastMethod.create(String.class.getMethod("startsWith", String.class), fastMemberLoader);
         fastMethodSet.add(fm1);
         fastMethodSet.add(fm2);
         assertEquals(1, fastMethodSet.size());
@@ -97,5 +98,11 @@ public class FastMethodTest {
         Method startsWithMethod = String.class.getMethod("startsWith", String.class);
         FastMethod fm = FastMethod.create(startsWithMethod);
         assertEquals(startsWithMethod.getModifiers(), fm.getModifiers());
+    }
+
+    @Test
+    public void testGetDeclaringClass() throws NoSuchMethodException {
+        FastMethod fm = FastMethod.create(String.class.getMethod("startsWith", String.class));
+        fm.getDeclaringClass();
     }
 }

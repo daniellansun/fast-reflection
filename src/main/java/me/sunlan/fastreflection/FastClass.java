@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FastClass {
     public static FastClass create(Class<?> clazz) {
-        return create(clazz, new FastMethodLoader(Thread.currentThread().getContextClassLoader()));
+        return create(clazz, new FastMemberLoader(Thread.currentThread().getContextClassLoader()));
     }
 
     public static FastClass create(Class<?> clazz, ClassDefinable classDefiner) {
@@ -83,12 +83,12 @@ public class FastClass {
         if (this == o) return true;
         if (!(o instanceof FastClass)) return false;
         FastClass fastClass = (FastClass) o;
-        return clazz.equals(fastClass.clazz);
+        return classDefiner == fastClass.classDefiner && clazz.equals(fastClass.clazz);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clazz);
+        return Objects.hash(clazz, classDefiner);
     }
 
     @Override

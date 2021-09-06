@@ -18,10 +18,12 @@
  */
 package me.sunlan.fastreflection;
 
-public class FastMethodLoader extends ClassLoader implements ClassDefinable {
-    public FastMethodLoader() {}
+public class FastMemberLoader extends ClassLoader implements ClassDefinable {
+    public FastMemberLoader() {
+        this(Thread.currentThread().getContextClassLoader());
+    }
 
-    public FastMethodLoader(ClassLoader parent) {
+    public FastMemberLoader(ClassLoader parent) {
         super(parent);
     }
 

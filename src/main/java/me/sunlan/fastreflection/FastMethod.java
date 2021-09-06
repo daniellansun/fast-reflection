@@ -63,9 +63,16 @@ import static org.objectweb.asm.Opcodes.V1_8;
 
 public abstract class FastMethod implements FastMember {
     private final Method method;
+    private final FastClass declaringClass;
 
-    public FastMethod(Method method) {
+    public FastMethod(Method method, ClassDefinable classDefiner) {
         this.method = method;
+        this.declaringClass = FastClass.create(method.getDeclaringClass(), classDefiner);
+    }
+
+    @Override
+    public FastClass getDeclaringClass() {
+        return declaringClass;
     }
 
     @Override
@@ -89,7 +96,7 @@ public abstract class FastMethod implements FastMember {
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
 
     public static FastMethod create(Method method) {
-        return create(method, new FastMethodLoader(Thread.currentThread().getContextClassLoader()));
+        return create(method, new FastMemberLoader(Thread.currentThread().getContextClassLoader()));
     }
 
     public static FastMethod create(Method method, ClassDefinable classDefiner) {
@@ -103,7 +110,7 @@ public abstract class FastMethod implements FastMember {
 //        long e = System.currentTimeMillis();
 //        System.out.println("defineClass: " + (e - m) + "ms");
         try {
-            return (FastMethod) fastMethodClass.getConstructor(Method.class).newInstance(method);
+            return (FastMethod) fastMethodClass.getConstructor(Method.class, ClassDefinable.class).newInstance(method, classDefiner);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new FastMethodInstantiationException(e);
         }
@@ -124,20 +131,20 @@ public abstract class FastMethod implements FastMember {
         }
         final String classDescriptor = "L" + internalClassName + ";";
         {
-            mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/reflect/Method;)V", null, null);
+            mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/reflect/Method;Lme/sunlan/fastreflection/ClassDefinable;)V", null, null);
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKESPECIAL, FASTMETHOD_INTERNAL_NAME, "<init>", "(Ljava/lang/reflect/Method;)V", false);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
+            mv.visitVarInsn(ALOAD, 2);
+            mv.visitMethodInsn(INVOKESPECIAL, FASTMETHOD_INTERNAL_NAME, "<init>", "(Ljava/lang/reflect/Method;Lme/sunlan/fastreflection/ClassDefinable;)V", false);
             mv.visitInsn(RETURN);
             Label label2 = new Label();
             mv.visitLabel(label2);
             mv.visitLocalVariable("this", classDescriptor, null, label0, label2, 0);
             mv.visitLocalVariable("method", "Ljava/lang/reflect/Method;", null, label0, label2, 1);
+            mv.visitLocalVariable("classDefiner", "Lme/sunlan/fastreflection/ClassDefinable;", null, label0, label2, 2);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
         }
@@ -251,12 +258,12 @@ public abstract class FastMethod implements FastMember {
         if (this == o) return true;
         if (!(o instanceof FastMethod)) return false;
         FastMethod that = (FastMethod) o;
-        return method.equals(that.method);
+        return method.equals(that.method) && declaringClass.equals(that.declaringClass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method);
+        return Objects.hash(method, declaringClass);
     }
 
     @Override

@@ -89,8 +89,9 @@ class FastClassTest {
     @Test
     public void testEqualsAndHashCode() {
         Set<FastClass> fastClassSet = new HashSet<>();
-        FastClass fc1 = FastClass.create(String.class);
-        FastClass fc2 = FastClass.create(String.class);
+        FastMemberLoader fastMemberLoader = new FastMemberLoader();
+        FastClass fc1 = FastClass.create(String.class, fastMemberLoader);
+        FastClass fc2 = FastClass.create(String.class, fastMemberLoader);
         fastClassSet.add(fc1);
         fastClassSet.add(fc2);
         assertEquals(1, fastClassSet.size());
