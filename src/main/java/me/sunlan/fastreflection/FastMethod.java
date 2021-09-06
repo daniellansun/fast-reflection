@@ -116,7 +116,7 @@ public abstract class FastMethod implements FastMember {
         try {
             return (FastMethod) fastMethodClass.getConstructor(Method.class, ClassDefinable.class).newInstance(method, classDefiner);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastMethodInstantiationException(e);
+            throw new FastMemberInstantiationException(e);
         }
     }
 
