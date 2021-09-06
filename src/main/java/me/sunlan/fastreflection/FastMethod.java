@@ -106,7 +106,7 @@ public abstract class FastMethod implements FastMember {
         MethodVisitor mv;
 
         classWriter.visit(V1_8, ACC_CLASS, internalClassName, null, FASTMETHOD_INTERNAL_NAME, null);
-        classWriter.visitInnerClass(LOOKUP_INTERNAL_NAME, METHODHANDLE_INTERNAL_NAME, "Lookup", ACC_PUBLIC | ACC_FINAL | ACC_STATIC);
+        classWriter.visitInnerClass(LOOKUP_INTERNAL_NAME, METHODHANDLE_INTERNAL_NAME, "Lookup", ACC_INNERCLASS);
 
         {
             fv = classWriter.visitField(ACC_FIELD, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR, null, null);
@@ -265,6 +265,7 @@ public abstract class FastMethod implements FastMember {
     }
 
     private static final int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;
+    private static final int ACC_INNERCLASS = ACC_PUBLIC | ACC_FINAL | ACC_STATIC;
     private static final int ACC_FIELD = ACC_PRIVATE | ACC_FINAL | ACC_STATIC;
     private static final int ACC_METHOD = ACC_PUBLIC | ACC_VARARGS;
     private static final String FASTMETHOD_INTERNAL_NAME = FastMethod.class.getName().replace('.', '/');
