@@ -72,7 +72,7 @@ public class FastClass<T> {
         FastMethod[] fastMethods = new FastMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
-            fastMethods[i] = getOrCreate(m);
+            fastMethods[i] = new LazyFastMethod(() -> getOrCreate(m));
         }
         return fastMethods;
     }

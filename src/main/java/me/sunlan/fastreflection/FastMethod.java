@@ -66,6 +66,12 @@ public abstract class FastMethod implements FastMember {
     private final FastClass<?> declaringClass;
     private final ClassDefinable classDefiner;
 
+    FastMethod() {
+        this.method = null;
+        this.declaringClass = null;
+        this.classDefiner = null;
+    }
+
     public FastMethod(Method method, ClassDefinable classDefiner) {
         this.method = method;
         this.classDefiner = classDefiner;
