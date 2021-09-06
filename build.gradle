@@ -35,7 +35,19 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${version_junit}"
 }
 
+group 'me.sunlan'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 tasks.named('test') {
+    jvmArgs(['-Xms512m', '-Xms512m', '-XX:MetaspaceSize=256m', '-XX:MaxMetaspaceSize=256m', '-XX:+UseG1GC'])
+
     // Use junit platform for unit tests.
     useJUnitPlatform()
 }
