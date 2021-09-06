@@ -46,12 +46,12 @@ public class FastClass<T> {
 
     public FastMethod getMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method m = clazz.getMethod(name, parameterTypes);
-        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
+        return getOrCreate(m);
     }
 
     public FastMethod getDeclaredMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method m = clazz.getDeclaredMethod(name, parameterTypes);
-        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
+        return getOrCreate(m);
     }
 
     public FastMethod[] getMethods() {
@@ -68,9 +68,13 @@ public class FastClass<T> {
         FastMethod[] fastMethods = new FastMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
-            fastMethods[i] = fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
+            fastMethods[i] = getOrCreate(m);
         }
         return fastMethods;
+    }
+
+    private FastMethod getOrCreate(Method m) {
+        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
     }
 
     private FastClass(Class<T> clazz, ClassDefinable classDefiner) {
