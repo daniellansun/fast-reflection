@@ -64,6 +64,10 @@ public class FastClass<T> {
         return doGetMethods(methods);
     }
 
+    public Class<T> getRawClass() {
+        return clazz;
+    }
+
     private synchronized FastMethod[] doGetMethods(Method[] methods) {
         FastMethod[] fastMethods = new FastMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {

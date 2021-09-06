@@ -125,4 +125,11 @@ class FastClassTest {
         FastClass<String> fc = FastClass.create(clazz);
         assertEquals(clazz.getModifiers(), fc.getModifiers());
     }
+
+    @Test
+    public void testGetRawClass() {
+        Class<String> clazz = String.class;
+        FastClass<String> fc = FastClass.create(clazz);
+        assertSame(clazz, fc.getRawClass());
+    }
 }
