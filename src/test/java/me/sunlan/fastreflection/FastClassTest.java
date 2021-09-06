@@ -71,7 +71,13 @@ class FastClassTest {
         FastClass<String> fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getDeclaredMethods();
         FastMethod startsWithFastMethod = Arrays.stream(fms)
-                .filter(fm -> fm.getName().equals("startsWith") && fm.getParameterTypes().length == 1)
+                .filter(fm -> {
+                    try {
+                        return fm.getName().equals("startsWith") && fm.getParameterTypes().length == 1;
+                    } catch (FastMemberInstantiationException ignored) {
+                        return false;
+                    }
+                })
                 .findAny()
                 .orElseThrow(() -> new AssertionError("method `startsWith` not found"));
 
