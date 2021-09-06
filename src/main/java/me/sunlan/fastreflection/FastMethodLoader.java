@@ -26,7 +26,11 @@ public class FastMethodLoader extends ClassLoader implements ClassDefinable {
     }
 
     @Override
-    public Class<?> defineClass(String className, byte[] bytes) {
+    public synchronized Class<?> defineClass(String className, byte[] bytes) {
+        Class<?> result = findLoadedClass(className);
+        if (null != result) {
+            return result;
+        }
         return super.defineClass(className, bytes, 0, bytes.length);
     }
 }

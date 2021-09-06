@@ -55,6 +55,13 @@ class FastClassTest {
     }
 
     @Test
+    public void testGetMethodsMultipleTimes() throws Throwable {
+        FastClass fc = FastClass.create(String.class);
+        FastMethod[] fms = fc.getMethods();
+        fms = fc.getMethods();
+    }
+
+    @Test
     public void testGetDeclaredMethods() throws Throwable {
         FastClass fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getDeclaredMethods();
@@ -65,5 +72,12 @@ class FastClassTest {
 
         boolean result = (boolean) startsWithFastMethod.invoke("abc", "a");
         assertTrue(result);
+    }
+
+    @Test
+    public void testGetDeclaredMethodsMultipleTimes() throws Throwable {
+        FastClass fc = FastClass.create(String.class);
+        FastMethod[] fms = fc.getDeclaredMethods();
+        fms = fc.getDeclaredMethods();
     }
 }
