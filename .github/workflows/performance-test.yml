@@ -42,3 +42,8 @@ jobs:
         timeout-minutes: 60
         env:
           GRADLE_SCANS_ACCEPT: yes
+      - name: Upload performance result report
+        uses: actions/upload-artifact@v1
+        with:
+          name: performance result report
+          path: build/reports/jmh/
