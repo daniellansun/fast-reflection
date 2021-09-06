@@ -18,8 +18,9 @@
  */
 package me.sunlan.fastreflection;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FastClass {
     public static FastClass create(Class<?> clazz) {
@@ -30,30 +31,31 @@ public class FastClass {
         return new FastClass(clazz, classDefiner);
     }
 
-    public FastMethod getMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public FastMethod getMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method m = clazz.getMethod(name, parameterTypes);
-        return FastMethod.create(m, classDefiner);
+        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
     }
 
-    public FastMethod getDeclaredMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public FastMethod getDeclaredMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method m = clazz.getDeclaredMethod(name, parameterTypes);
-        return FastMethod.create(m, classDefiner);
+        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
     }
 
-    public FastMethod[] getMethods() throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public FastMethod[] getMethods() {
         Method[] methods = clazz.getMethods();
-        FastMethod[] fastMethods = new FastMethod[methods.length];
-        for (int i = 0; i < methods.length; i++) {
-            fastMethods[i] = FastMethod.create(methods[i], classDefiner);
-        }
-        return fastMethods;
+        return doGetMethods(methods);
     }
 
-    public FastMethod[] getDeclaredMethods() throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public FastMethod[] getDeclaredMethods() {
         Method[] methods = clazz.getDeclaredMethods();
+        return doGetMethods(methods);
+    }
+
+    private FastMethod[] doGetMethods(Method[] methods) {
         FastMethod[] fastMethods = new FastMethod[methods.length];
         for (int i = 0; i < methods.length; i++) {
-            fastMethods[i] = FastMethod.create(methods[i], classDefiner);
+            Method m = methods[i];
+            fastMethods[i] = fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
         }
         return fastMethods;
     }
@@ -65,4 +67,5 @@ public class FastClass {
 
     private final Class<?> clazz;
     private final ClassDefinable classDefiner;
+    private final Map<Method, FastMethod> fastMethodMapCache = new ConcurrentHashMap<>();
 }

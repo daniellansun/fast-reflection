@@ -81,23 +81,11 @@ public abstract class FastMethod {
 
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
 
-    public static FastMethod create(Method method) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public static FastMethod create(Method method) {
         return create(method, new FastMethodLoader(Thread.currentThread().getContextClassLoader()));
     }
 
-    private static String md5(String str) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(str.getBytes());
-            byte[] digest = md.digest();
-
-            return new BigInteger(1, digest).toString(16);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e); // should never happen
-        }
-    }
-
-    public static FastMethod create(Method method, ClassDefinable classDefiner) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public static FastMethod create(Method method, ClassDefinable classDefiner) {
         String className = "me.sunlan.fastreflection.runtime.FastMethod_" + md5(method.toGenericString());
 //        long b = System.currentTimeMillis();
         byte[] bytes = gen(className, method);
@@ -107,7 +95,11 @@ public abstract class FastMethod {
         Class<?> fastMethodClass = classDefiner.defineClass(className, bytes);
 //        long e = System.currentTimeMillis();
 //        System.out.println("defineClass: " + (e - m) + "ms");
-        return (FastMethod) fastMethodClass.getConstructor(Method.class).newInstance(method);
+        try {
+            return (FastMethod) fastMethodClass.getConstructor(Method.class).newInstance(method);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new FastMethodInstantiationException(e);
+        }
     }
 
     private static byte[] gen(String className, Method method) {
@@ -233,6 +225,18 @@ public abstract class FastMethod {
         classWriter.visitEnd();
 
         return classWriter.toByteArray();
+    }
+
+    private static String md5(String str) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(str.getBytes());
+            byte[] digest = md.digest();
+
+            return new BigInteger(1, digest).toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e); // should never happen
+        }
     }
 
     private static final int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;
