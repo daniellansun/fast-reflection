@@ -74,6 +74,8 @@ final class LazyFastMethod extends FastMethod {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LazyFastMethod)) return false;
         lazyInit();
         return delegate.equals(o);
     }
