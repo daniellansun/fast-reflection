@@ -103,6 +103,15 @@ public class FastMethodTest {
     @Test
     public void testGetDeclaringClass() throws NoSuchMethodException {
         FastMethod fm = FastMethod.create(String.class.getMethod("startsWith", String.class));
-        fm.getDeclaringClass();
+        FastClass<?> declaringClass = fm.getDeclaringClass();
+        FastMethod fm2 = declaringClass.getDeclaredMethod("startsWith", String.class);
+        assertEquals(fm, fm2);
+    }
+
+    @Test
+    public void testGetReturnType() throws NoSuchMethodException {
+        FastMethod fm = FastMethod.create(String.class.getMethod("startsWith", String.class));
+        FastClass<?> returnType = fm.getReturnType();
+        assertEquals("boolean", returnType.getName());
     }
 }

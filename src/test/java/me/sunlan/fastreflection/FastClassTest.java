@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FastClassTest {
     @Test
     public void testGetMethod() throws Throwable {
-        FastClass fc = FastClass.create(String.class);
+        FastClass<String> fc = FastClass.create(String.class);
         FastMethod fm = fc.getMethod("startsWith", String.class);
         boolean result = (boolean) fm.invoke("abc", "a");
         assertTrue(result);
@@ -40,7 +40,7 @@ class FastClassTest {
 
     @Test
     public void testGetDeclaredMethod() throws Throwable {
-        FastClass fc = FastClass.create(String.class);
+        FastClass<String> fc = FastClass.create(String.class);
         FastMethod fm = fc.getDeclaredMethod("startsWith", String.class);
         boolean result = (boolean) fm.invoke("abc", "a");
         assertTrue(result);
@@ -48,7 +48,7 @@ class FastClassTest {
 
     @Test
     public void testGetMethods() throws Throwable {
-        FastClass fc = FastClass.create(String.class);
+        FastClass<String> fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getMethods();
         FastMethod startsWithFastMethod = Arrays.stream(fms)
                 .filter(fm -> fm.getName().equals("startsWith") && fm.getParameterTypes().length == 1)
@@ -61,14 +61,14 @@ class FastClassTest {
 
     @Test
     public void testGetMethodsMultipleTimes() {
-        FastClass fc = FastClass.create(String.class);
+        FastClass<String> fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getMethods();
         fms = fc.getMethods();
     }
 
     @Test
     public void testGetDeclaredMethods() throws Throwable {
-        FastClass fc = FastClass.create(String.class);
+        FastClass<String> fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getDeclaredMethods();
         FastMethod startsWithFastMethod = Arrays.stream(fms)
                 .filter(fm -> fm.getName().equals("startsWith") && fm.getParameterTypes().length == 1)
@@ -81,17 +81,17 @@ class FastClassTest {
 
     @Test
     public void testGetDeclaredMethodsMultipleTimes() {
-        FastClass fc = FastClass.create(String.class);
+        FastClass<String> fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getDeclaredMethods();
         fms = fc.getDeclaredMethods();
     }
 
     @Test
     public void testEqualsAndHashCode() {
-        Set<FastClass> fastClassSet = new HashSet<>();
+        Set<FastClass<String>> fastClassSet = new HashSet<>();
         FastMemberLoader fastMemberLoader = new FastMemberLoader();
-        FastClass fc1 = FastClass.create(String.class, fastMemberLoader);
-        FastClass fc2 = FastClass.create(String.class, fastMemberLoader);
+        FastClass<String> fc1 = FastClass.create(String.class, fastMemberLoader);
+        FastClass<String> fc2 = FastClass.create(String.class, fastMemberLoader);
         fastClassSet.add(fc1);
         fastClassSet.add(fc2);
         assertEquals(1, fastClassSet.size());
@@ -101,28 +101,28 @@ class FastClassTest {
     @Test
     public void testToString() {
         Class<String> clazz = String.class;
-        FastClass fc = FastClass.create(clazz);
+        FastClass<String> fc = FastClass.create(clazz);
         assertEquals(clazz.toString(), fc.toString());
     }
 
     @Test
     public void testGetName() {
         Class<String> clazz = String.class;
-        FastClass fc = FastClass.create(clazz);
+        FastClass<String> fc = FastClass.create(clazz);
         assertEquals(clazz.getName(), fc.getName());
     }
 
     @Test
     public void testGetSimpleName() {
         Class<String> clazz = String.class;
-        FastClass fc = FastClass.create(clazz);
+        FastClass<String> fc = FastClass.create(clazz);
         assertEquals(clazz.getSimpleName(), fc.getSimpleName());
     }
 
     @Test
     public void testGetModifiers() {
         Class<String> clazz = String.class;
-        FastClass fc = FastClass.create(clazz);
+        FastClass<String> fc = FastClass.create(clazz);
         assertEquals(clazz.getModifiers(), fc.getModifiers());
     }
 }

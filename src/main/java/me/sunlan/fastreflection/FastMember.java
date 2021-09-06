@@ -19,7 +19,7 @@
 package me.sunlan.fastreflection;
 
 public interface FastMember {
-    FastClass getDeclaringClass();
+    FastClass<?> getDeclaringClass();
     String getName();
     int getModifiers();
 }

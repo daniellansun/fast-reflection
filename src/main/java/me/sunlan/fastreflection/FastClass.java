@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FastClass {
-    public static FastClass create(Class<?> clazz) {
+public class FastClass<T> {
+    public static <T> FastClass<T> create(Class<T> clazz) {
         return create(clazz, new FastMemberLoader(Thread.currentThread().getContextClassLoader()));
     }
 
-    public static FastClass create(Class<?> clazz, ClassDefinable classDefiner) {
-        return new FastClass(clazz, classDefiner);
+    public static <T> FastClass<T>  create(Class<T> clazz, ClassDefinable classDefiner) {
+        return new FastClass<>(clazz, classDefiner);
     }
 
     public String getName() {
@@ -73,7 +73,7 @@ public class FastClass {
         return fastMethods;
     }
 
-    private FastClass(Class<?> clazz, ClassDefinable classDefiner) {
+    private FastClass(Class<T> clazz, ClassDefinable classDefiner) {
         this.clazz = clazz;
         this.classDefiner = classDefiner;
     }
@@ -82,7 +82,7 @@ public class FastClass {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof FastClass)) return false;
-        FastClass fastClass = (FastClass) o;
+        FastClass<?> fastClass = (FastClass<?>) o;
         return classDefiner == fastClass.classDefiner && clazz.equals(fastClass.clazz);
     }
 
@@ -96,7 +96,7 @@ public class FastClass {
         return clazz.toString();
     }
 
-    private final Class<?> clazz;
+    private final Class<T> clazz;
     private final ClassDefinable classDefiner;
     private final Map<Method, FastMethod> fastMethodMapCache = new ConcurrentHashMap<>();
 }

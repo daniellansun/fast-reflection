@@ -63,15 +63,17 @@ import static org.objectweb.asm.Opcodes.V1_8;
 
 public abstract class FastMethod implements FastMember {
     private final Method method;
-    private final FastClass declaringClass;
+    private final FastClass<?> declaringClass;
+    private final ClassDefinable classDefiner;
 
     public FastMethod(Method method, ClassDefinable classDefiner) {
         this.method = method;
+        this.classDefiner = classDefiner;
         this.declaringClass = FastClass.create(method.getDeclaringClass(), classDefiner);
     }
 
     @Override
-    public FastClass getDeclaringClass() {
+    public FastClass<?> getDeclaringClass() {
         return declaringClass;
     }
 
@@ -85,12 +87,14 @@ public abstract class FastMethod implements FastMember {
         return method.getModifiers();
     }
 
-    public Class<?> getReturnType() {
-        return method.getReturnType();
+    public FastClass<?> getReturnType() {
+        return FastClass.create(method.getReturnType(), classDefiner);
     }
 
-    public Class<?>[] getParameterTypes() {
-        return method.getParameterTypes();
+    public FastClass<?>[] getParameterTypes() {
+        return Arrays.stream(method.getParameterTypes())
+                .map(pt -> FastClass.create(pt, classDefiner))
+                .toArray(FastClass[]::new);
     }
 
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
@@ -117,21 +121,19 @@ public abstract class FastMethod implements FastMember {
     }
 
     private static byte[] gen(String className, Method method) {
-        final String internalClassName = className.replace('.', '/');
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        FieldVisitor fv;
-        MethodVisitor mv;
-
+        final String internalClassName = className.replace('.', '/');
         classWriter.visit(V1_8, ACC_CLASS, internalClassName, null, FASTMETHOD_INTERNAL_NAME, null);
         classWriter.visitInnerClass(LOOKUP_INTERNAL_NAME, METHODHANDLE_INTERNAL_NAME, "Lookup", ACC_INNERCLASS);
 
         {
-            fv = classWriter.visitField(ACC_FIELD, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR, null, null);
+            FieldVisitor fv = classWriter.visitField(ACC_FIELD, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR, null, null);
             fv.visitEnd();
         }
+
         final String classDescriptor = "L" + internalClassName + ";";
         {
-            mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/reflect/Method;Lme/sunlan/fastreflection/ClassDefinable;)V", null, null);
+            MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/reflect/Method;Lme/sunlan/fastreflection/ClassDefinable;)V", null, null);
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
@@ -152,7 +154,7 @@ public abstract class FastMethod implements FastMember {
         final Class<?> returnType = method.getReturnType();
         final boolean isStaticMethod = Modifier.isStatic(method.getModifiers());
         {
-            mv = classWriter.visitMethod(ACC_METHOD, "invoke", "(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;", null, new String[]{"java/lang/Throwable"});
+            MethodVisitor mv = classWriter.visitMethod(ACC_METHOD, "invoke", "(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;", null, new String[]{"java/lang/Throwable"});
             mv.visitCode();
             Label label0 = new Label();
             mv.visitLabel(label0);
@@ -196,7 +198,7 @@ public abstract class FastMethod implements FastMember {
             mv.visitEnd();
         }
         {
-            mv = classWriter.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+            MethodVisitor mv = classWriter.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
             mv.visitCode();
             Label label0 = new Label();
             Label label1 = new Label();
