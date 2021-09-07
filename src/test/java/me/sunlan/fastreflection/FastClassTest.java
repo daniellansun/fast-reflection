@@ -74,7 +74,7 @@ class FastClassTest {
                 .filter(fm -> {
                     try {
                         return fm.getName().equals("startsWith") && fm.getParameterTypes().length == 1;
-                    } catch (FastMemberInstantiationException ignored) {
+                    } catch (FastMemberInstantiationException e) {
                         return false;
                     }
                 })
@@ -90,6 +90,56 @@ class FastClassTest {
         FastClass<String> fc = FastClass.create(String.class);
         FastMethod[] fms = fc.getDeclaredMethods();
         fms = fc.getDeclaredMethods();
+    }
+
+    @Test
+    public void testGetConstructor() throws Throwable {
+        FastClass<String> fc = FastClass.create(String.class);
+        FastConstructor<String> fctor = fc.getConstructor(char[].class);
+        Object arg = new char[]{'a', 'b', 'c'};
+        String result = (String) fctor.invoke(arg);
+        assertEquals("abc", result);
+    }
+
+    @Test
+    public void testGetDeclaredConstructor() throws Throwable {
+        FastClass<String> fc = FastClass.create(String.class);
+        FastConstructor<String> fctor = fc.getDeclaredConstructor(char[].class);
+        Object arg = new char[]{'a', 'b', 'c'};
+        String result = (String) fctor.invoke(arg);
+        assertEquals("abc", result);
+    }
+
+    @Test
+    public void testGetConstructors() throws Throwable {
+        FastClass<String> fc = FastClass.create(String.class);
+        FastConstructor<?> stringFastConstructor = Arrays.stream(fc.getConstructors()).filter(fctor -> {
+            FastClass<?>[] parameterTypes = fctor.getParameterTypes();
+            return parameterTypes.length == 1 && parameterTypes[0].getRawClass() == char[].class;
+        })
+        .findAny()
+        .orElseThrow(() -> new AssertionError("constructor `String(char[])` not found"));
+        Object arg = new char[]{'a', 'b', 'c'};
+        String result = (String) stringFastConstructor.invoke(arg);
+        assertEquals("abc", result);
+    }
+
+    @Test
+    public void testGetDeclaredConstructors() throws Throwable {
+        FastClass<String> fc = FastClass.create(String.class);
+        FastConstructor<?> stringFastConstructor = Arrays.stream(fc.getDeclaredConstructors()).filter(fctor -> {
+                    try {
+                        FastClass<?>[] parameterTypes = fctor.getParameterTypes();
+                        return parameterTypes.length == 1 && parameterTypes[0].getRawClass() == char[].class;
+                    } catch (FastMemberInstantiationException e) {
+                        return false;
+                    }
+                })
+                .findAny()
+                .orElseThrow(() -> new AssertionError("constructor `String(char[])` not found"));
+        Object arg = new char[]{'a', 'b', 'c'};
+        String result = (String) stringFastConstructor.invoke(arg);
+        assertEquals("abc", result);
     }
 
     @Test

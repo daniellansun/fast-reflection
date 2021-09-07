@@ -20,11 +20,11 @@ package me.sunlan.fastreflection;
 
 import java.util.function.Supplier;
 
-final class LazyFastMethod extends FastMethod {
-    private final Supplier<FastMethod> supplier;
-    private volatile FastMethod delegate;
+final class LazyFastConstructor<T> extends FastConstructor<T> {
+    private final Supplier<FastConstructor<T>> supplier;
+    private FastConstructor<T> delegate;
 
-    LazyFastMethod(Supplier<FastMethod> supplier) {
+    public LazyFastConstructor(Supplier<FastConstructor<T>> supplier) {
         this.supplier = supplier;
     }
 
@@ -37,13 +37,13 @@ final class LazyFastMethod extends FastMethod {
     }
 
     @Override
-    public Object invoke(Object obj, Object... args) throws Throwable {
+    public Object invoke(Object... args) throws Throwable {
         lazyInit();
-        return delegate.invoke(obj, args);
+        return delegate.invoke(args);
     }
 
     @Override
-    public FastClass<?> getDeclaringClass() {
+    public FastClass<T> getDeclaringClass() {
         lazyInit();
         return delegate.getDeclaringClass();
     }
@@ -61,9 +61,9 @@ final class LazyFastMethod extends FastMethod {
     }
 
     @Override
-    public FastClass<?> getReturnType() {
+    public boolean isVarArgs() {
         lazyInit();
-        return delegate.getReturnType();
+        return delegate.isVarArgs();
     }
 
     @Override
@@ -73,15 +73,9 @@ final class LazyFastMethod extends FastMethod {
     }
 
     @Override
-    public boolean isVarArgs() {
-        lazyInit();
-        return delegate.isVarArgs();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LazyFastMethod)) return false;
+        if (!(o instanceof LazyFastConstructor)) return false;
         lazyInit();
         return delegate.equals(o);
     }

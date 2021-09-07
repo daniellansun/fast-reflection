@@ -26,6 +26,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public abstract class FastConstructor<T> extends FastExecutable {
+    FastConstructor() {
+        super(null, null);
+        this.constructor = null;
+        this.memberLoader = null;
+        this.declaringClass = null;
+    }
+
     public FastConstructor(Constructor<T> constructor, MemberLoadable memberLoader) {
         super(constructor, memberLoader);
         this.constructor = constructor;
