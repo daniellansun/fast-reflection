@@ -1,8 +1,8 @@
 # fast-reflection
-Yet another fast alternative for Java reflection, making dynamic calls as efficient as direct calls.
+Yet another fast alternative for Java reflection(WIP), making dynamic calls as efficient as direct calls.
 
 ## Usage
-See the tests:
+See the tests for now:
 * [tests for `FastMethod`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastMethodTest.java)
 * [tests for `FastConstructor`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastConstructorTest.java)
 * [tests for `FastClass`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastClassTest.java)
