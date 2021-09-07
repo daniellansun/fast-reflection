@@ -21,12 +21,12 @@ Run `gradlew jmh` to get the performance test result.
 * Benchmark mode: Average time, time/op
 
 ```
-Benchmark                                                       Mode  Cnt   Score   Error  Units
-FastMethodPerfTest.direct_constructor_StringCtorCharArray       avgt   15   5.592 ± 0.136  ns/op
-FastMethodPerfTest.direct_method_StringStartsWith               avgt   15   0.742 ± 0.022  ns/op
-FastMethodPerfTest.fastreflect_constructor_StringCtorCharArray  avgt   15   5.285 ± 0.147  ns/op
-FastMethodPerfTest.fastreflect_method_StringStartsWith          avgt   15   0.768 ± 0.020  ns/op
-FastMethodPerfTest.reflect_constructor_StringCtorCharArray      avgt   15  12.633 ± 0.293  ns/op
-FastMethodPerfTest.reflect_method_StringStartsWith              avgt   15  11.166 ± 0.339  ns/op
+Benchmark                                                       Mode  Cnt   Score    Error  Units
+FastMethodPerfTest.constructor_direct_StringCtorCharArray       avgt   15   5.854 ±  0.064  ns/op
+FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray  avgt   15   5.259 ±  0.228  ns/op
+FastMethodPerfTest.constructor_reflect_StringCtorCharArray      avgt   15  14.208 ±  0.586  ns/op
+FastMethodPerfTest.method_direct_StringStartsWith               avgt   15   0.493 ±  0.078  ns/op
+FastMethodPerfTest.method_fastreflect_StringStartsWith          avgt   15   0.443 ±  0.001  ns/op
+FastMethodPerfTest.method_reflect_StringStartsWith              avgt   15   8.525 ±  1.171  ns/op
 ```
 (**Note:** fast-reflection runs almost as fast as direct call and much faster than normal reflection)
