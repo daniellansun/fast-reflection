@@ -61,6 +61,7 @@ import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_8;
 
 public abstract class FastMethod implements FastMember {
+
     FastMethod() {
         this.method = null;
         this.declaringClass = null;
@@ -109,11 +110,11 @@ public abstract class FastMethod implements FastMember {
 //        long b = System.currentTimeMillis();
         byte[] bytes = gen(className, method);
 //        long m = System.currentTimeMillis();
-//        System.out.println("dump: " + (m - b) + "ms");
+//        System.out.println("gen: " + (m - b) + "ms");
 
         Class<?> fastMethodClass = classDefiner.defineClass(className, bytes);
-//        long e = System.currentTimeMillis();
-//        System.out.println("defineClass: " + (e - m) + "ms");
+//        long end = System.currentTimeMillis();
+//        System.out.println("defineClass: " + (end - m) + "ms");
         try {
             return (FastMethod) fastMethodClass.getConstructor(Method.class, ClassDefinable.class).newInstance(method, classDefiner);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -124,7 +125,7 @@ public abstract class FastMethod implements FastMember {
     }
 
     private static byte[] gen(String className, Method method) {
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        ClassWriter classWriter = new ClassWriter(CLASSWRITER_FLAGS);
         final String internalClassName = className.replace('.', '/');
         classWriter.visit(V1_8, ACC_CLASS, internalClassName, null, FASTMETHOD_INTERNAL_NAME, null);
         classWriter.visitInnerClass(LOOKUP_INTERNAL_NAME, METHODHANDLE_INTERNAL_NAME, "Lookup", ACC_INNERCLASS);
@@ -271,6 +272,7 @@ public abstract class FastMethod implements FastMember {
     private final FastClass<?> declaringClass;
     private final ClassDefinable classDefiner;
 
+    private static final int CLASSWRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
     private static final int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;
     private static final int ACC_INNERCLASS = ACC_PUBLIC | ACC_FINAL | ACC_STATIC;
     private static final int ACC_FIELD = ACC_PRIVATE | ACC_FINAL | ACC_STATIC;
