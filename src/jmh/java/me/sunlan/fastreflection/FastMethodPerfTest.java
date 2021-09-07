@@ -28,6 +28,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
@@ -48,27 +49,51 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 public class FastMethodPerfTest {
     @Benchmark
-    public void direct_StringStartsWith() throws Throwable {
+    public void direct_method_StringStartsWith() {
         "abc".startsWith("a");
     }
 
     @Benchmark
-    public void reflect_StringStartsWith() throws Throwable {
+    public void reflect_method_StringStartsWith() throws Throwable {
         STARTSWITH_METHOD.invoke("abc", "a");
     }
 
     @Benchmark
-    public void fastreflect_StringStartsWith() throws Throwable {
+    public void fastreflect_method_StringStartsWith() throws Throwable {
         FAST_STARTSWITH_METHOD.invoke("abc", "a");
+    }
+
+
+    @Benchmark
+    public void direct_constructor_StringCtorCharArray() {
+        new String(CHAR_ARRAY);
+    }
+
+    @Benchmark
+    public void reflect_constructor_StringCtorCharArray() throws Throwable {
+        STRING_CONSTRUCTOR_CHAR_ARRAY.newInstance(CHAR_ARRAY_OBJECT);
+    }
+
+    @Benchmark
+    public void fastreflect_constructor_StringCtorCharArray() throws Throwable {
+        FAST_STRING_CONSTRUCTOR_CHAR_ARRAY.invoke(CHAR_ARRAY_OBJECT);
     }
 
     private static final Method STARTSWITH_METHOD;
     private static final FastMethod FAST_STARTSWITH_METHOD;
 
+    private static final Constructor<String> STRING_CONSTRUCTOR_CHAR_ARRAY;
+    private static final FastConstructor<String> FAST_STRING_CONSTRUCTOR_CHAR_ARRAY;
+    private static final char[] CHAR_ARRAY = {'a', 'b', 'c'};
+    private static final Object CHAR_ARRAY_OBJECT = CHAR_ARRAY;
+
     static {
         try {
             STARTSWITH_METHOD = String.class.getMethod("startsWith", String.class);
             FAST_STARTSWITH_METHOD = FastMethod.create(STARTSWITH_METHOD);
+
+            STRING_CONSTRUCTOR_CHAR_ARRAY = String.class.getConstructor(char[].class);
+            FAST_STRING_CONSTRUCTOR_CHAR_ARRAY = FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY);
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
