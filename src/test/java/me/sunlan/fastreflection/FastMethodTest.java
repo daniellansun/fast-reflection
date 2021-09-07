@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -125,5 +126,14 @@ public class FastMethodTest {
         Throwable cause = exception.getCause();
         assertTrue(cause instanceof IllegalAccessException);
         assertEquals("no such method: java.util.AbstractList.removeRange(int,int)void/invokeVirtual", cause.getMessage());
+    }
+
+    @Test
+    public void testIsVarArgs() throws Throwable {
+        FastMethod fm = FastMethod.create(Arrays.class.getMethod("asList", Object[].class));
+        Object arg = new Object[] {1, 2, 3};
+        Object result = fm.invoke(null, arg);
+        assertEquals(Arrays.asList(1, 2, 3), result);
+        assertTrue(fm.isVarArgs());
     }
 }

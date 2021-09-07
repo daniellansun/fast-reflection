@@ -67,6 +67,12 @@ final class LazyFastMethod extends FastMethod {
     }
 
     @Override
+    public boolean isVarArgs() {
+        lazyInit();
+        return delegate.isVarArgs();
+    }
+
+    @Override
     public Object invoke(Object obj, Object... args) throws Throwable {
         lazyInit();
         return delegate.invoke(obj, args);

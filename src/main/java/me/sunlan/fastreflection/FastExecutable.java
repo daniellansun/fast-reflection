@@ -24,10 +24,17 @@ import java.util.Arrays;
 public abstract class FastExecutable implements FastMember {
     private final Executable executable;
     private final MemberLoadable memberLoader;
+    protected final FastClass<?> declaringClass;
 
     protected FastExecutable(Executable executable, MemberLoadable memberLoader) {
         this.executable = executable;
         this.memberLoader = memberLoader;
+        this.declaringClass = null == executable
+                                ? null : FastClass.create(executable.getDeclaringClass(), memberLoader);
+    }
+
+    public boolean isVarArgs() {
+        return executable.isVarArgs();
     }
 
     public FastClass<?>[] getParameterTypes() {

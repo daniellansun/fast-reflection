@@ -29,7 +29,6 @@ public abstract class FastMethod extends FastExecutable {
     FastMethod() {
         super(null, null);
         this.method = null;
-        this.declaringClass = null;
         this.memberLoader = null;
     }
 
@@ -37,7 +36,6 @@ public abstract class FastMethod extends FastExecutable {
         super(method, memberLoader);
         this.method = method;
         this.memberLoader = memberLoader;
-        this.declaringClass = FastClass.create(method.getDeclaringClass(), memberLoader);
     }
 
     @Override
@@ -102,7 +100,5 @@ public abstract class FastMethod extends FastExecutable {
     }
 
     private final Method method;
-    private final FastClass<?> declaringClass;
     private final MemberLoadable memberLoader;
-
-    }
+}
