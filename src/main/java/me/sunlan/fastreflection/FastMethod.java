@@ -34,9 +34,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static me.sunlan.fastreflection.AsmUtils.cast;
-import static me.sunlan.fastreflection.AsmUtils.getInternalName;
+import static me.sunlan.fastreflection.AsmUtils.doReturn;
 import static me.sunlan.fastreflection.AsmUtils.getMethodDescriptor;
-import static me.sunlan.fastreflection.AsmUtils.getWrapper;
 import static me.sunlan.fastreflection.AsmUtils.visitLdcTypeInsn;
 import static org.objectweb.asm.Opcodes.AALOAD;
 import static org.objectweb.asm.Opcodes.AASTORE;
@@ -46,10 +45,8 @@ import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static org.objectweb.asm.Opcodes.ACC_SUPER;
 import static org.objectweb.asm.Opcodes.ACC_VARARGS;
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
 import static org.objectweb.asm.Opcodes.ASTORE;
 import static org.objectweb.asm.Opcodes.ATHROW;
 import static org.objectweb.asm.Opcodes.DUP;
@@ -185,16 +182,7 @@ public abstract class FastMethod implements FastMember {
 
             String invokeExactMethodDescriptor = getMethodDescriptor(returnType, parameterTypeStream.toArray(Class[]::new));
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/invoke/MethodHandle", "invokeExact", invokeExactMethodDescriptor, false);
-            if (void.class != returnType) {
-                if (returnType.isPrimitive()) {
-                    Class<?> returnTypeWrapper = getWrapper(returnType);
-                    String valueOfMethodDescriptor = getMethodDescriptor(returnTypeWrapper, new Class[] { returnType });
-                    mv.visitMethodInsn(INVOKESTATIC, getInternalName(returnTypeWrapper), "valueOf", valueOfMethodDescriptor, false);
-                }
-            } else {
-                mv.visitInsn(ACONST_NULL);
-            }
-            mv.visitInsn(ARETURN);
+            doReturn(mv, returnType);
             Label label3 = new Label();
             mv.visitLabel(label3);
             mv.visitLocalVariable("this", classDescriptor, null, label0, label3, 0);
@@ -251,6 +239,8 @@ public abstract class FastMethod implements FastMember {
 
         return classWriter.toByteArray();
     }
+
+
 
     private static String md5(String str) {
         try {

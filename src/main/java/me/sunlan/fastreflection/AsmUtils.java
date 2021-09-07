@@ -26,8 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ARETURN;
 import static org.objectweb.asm.Opcodes.CHECKCAST;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
 class AsmUtils {
@@ -39,6 +42,19 @@ class AsmUtils {
         } else {
             mv.visitTypeInsn(CHECKCAST, getInternalName(parameterType));
         }
+    }
+
+    public static void doReturn(MethodVisitor mv, Class<?> returnType) {
+        if (void.class == returnType) {
+            mv.visitInsn(ACONST_NULL);
+        } else {
+            if (returnType.isPrimitive()) {
+                Class<?> returnTypeWrapper = getWrapper(returnType);
+                String valueOfMethodDescriptor = getMethodDescriptor(returnTypeWrapper, new Class[] {returnType});
+                mv.visitMethodInsn(INVOKESTATIC, getInternalName(returnTypeWrapper), "valueOf", valueOfMethodDescriptor, false);
+            }
+        }
+        mv.visitInsn(ARETURN);
     }
 
     public static void visitLdcTypeInsn(MethodVisitor mv, Class<?> type) {
