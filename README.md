@@ -20,7 +20,7 @@ Run `gradlew jmh` to get the performance test result.
 * Threads: 1 thread, will synchronize iterations
 * Benchmark mode: Average time, time/op
 
-```
+```java
 Benchmark                                                       Mode  Cnt   Score    Error  Units
 FastMethodPerfTest.constructor_direct_StringCtorCharArray       avgt   15   5.854 ±  0.064  ns/op
 FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray  avgt   15   5.259 ±  0.228  ns/op
