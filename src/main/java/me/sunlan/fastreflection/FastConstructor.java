@@ -23,10 +23,11 @@ import me.sunlan.fastreflection.generator.FastConstructorGenerator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
-
-public abstract class FastConstructor<T> implements FastMember {
+public abstract class FastConstructor<T> extends FastExecutable {
     public FastConstructor(Constructor<T> constructor, MemberLoadable memberLoader) {
+        super(constructor, memberLoader);
         this.constructor = constructor;
         this.memberLoader = memberLoader;
         this.declaringClass = FastClass.create(constructor.getDeclaringClass(), memberLoader);
@@ -63,6 +64,24 @@ public abstract class FastConstructor<T> implements FastMember {
     @Override
     public int getModifiers() {
         return constructor.getModifiers();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FastConstructor)) return false;
+        FastConstructor<?> that = (FastConstructor<?>) o;
+        return constructor.equals(that.constructor) && declaringClass.equals(that.declaringClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(constructor, declaringClass);
+    }
+
+    @Override
+    public String toString() {
+        return constructor.toString();
     }
 
     private final Constructor<T> constructor;

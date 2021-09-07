@@ -20,7 +20,13 @@ package me.sunlan.fastreflection;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class FastConstructorTest {
     @Test
@@ -49,4 +55,22 @@ class FastConstructorTest {
         assertEquals(str, result);
     }
 
+    @Test
+    public void testEqualsAndHashCode() throws NoSuchMethodException {
+        Set<FastConstructor<String>> fastConstructorSet = new HashSet<>();
+        FastMemberLoader fastMemberLoader = new FastMemberLoader();
+        FastConstructor<String> fc1 = FastConstructor.create(String.class.getConstructor(char[].class), fastMemberLoader);
+        FastConstructor<String> fc2 = FastConstructor.create(String.class.getConstructor(char[].class), fastMemberLoader);
+        fastConstructorSet.add(fc1);
+        fastConstructorSet.add(fc2);
+        assertEquals(1, fastConstructorSet.size());
+        assertSame(fc1, new ArrayList<>(fastConstructorSet).get(0));
+    }
+
+    @Test
+    public void testToString() throws NoSuchMethodException {
+        Constructor<String> stringCtor = String.class.getConstructor(char[].class);
+        FastConstructor<String> fc = FastConstructor.create(stringCtor);
+        assertEquals(stringCtor.toString(), fc.toString());
+    }
 }

@@ -49,33 +49,33 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 public class FastMethodPerfTest {
     @Benchmark
-    public void direct_method_StringStartsWith() {
+    public void method_direct_StringStartsWith() {
         "abc".startsWith("a");
     }
 
     @Benchmark
-    public void reflect_method_StringStartsWith() throws Throwable {
+    public void method_reflect_StringStartsWith() throws Throwable {
         STARTSWITH_METHOD.invoke("abc", "a");
     }
 
     @Benchmark
-    public void fastreflect_method_StringStartsWith() throws Throwable {
+    public void method_fastreflect_StringStartsWith() throws Throwable {
         FAST_STARTSWITH_METHOD.invoke("abc", "a");
     }
 
 
     @Benchmark
-    public void direct_constructor_StringCtorCharArray() {
+    public void constructor_direct_StringCtorCharArray() {
         new String(CHAR_ARRAY);
     }
 
     @Benchmark
-    public void reflect_constructor_StringCtorCharArray() throws Throwable {
+    public void constructor_reflect_StringCtorCharArray() throws Throwable {
         STRING_CONSTRUCTOR_CHAR_ARRAY.newInstance(CHAR_ARRAY_OBJECT);
     }
 
     @Benchmark
-    public void fastreflect_constructor_StringCtorCharArray() throws Throwable {
+    public void constructor_fastreflect_StringCtorCharArray() throws Throwable {
         FAST_STRING_CONSTRUCTOR_CHAR_ARRAY.invoke(CHAR_ARRAY_OBJECT);
     }
 

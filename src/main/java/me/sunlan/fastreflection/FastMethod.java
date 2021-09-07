@@ -23,18 +23,18 @@ import me.sunlan.fastreflection.generator.FastMethodGenerator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Objects;
 
-public abstract class FastMethod implements FastMember {
-
+public abstract class FastMethod extends FastExecutable {
     FastMethod() {
+        super(null, null);
         this.method = null;
         this.declaringClass = null;
         this.memberLoader = null;
     }
 
     public FastMethod(Method method, MemberLoadable memberLoader) {
+        super(method, memberLoader);
         this.method = method;
         this.memberLoader = memberLoader;
         this.declaringClass = FastClass.create(method.getDeclaringClass(), memberLoader);
@@ -57,12 +57,6 @@ public abstract class FastMethod implements FastMember {
 
     public FastClass<?> getReturnType() {
         return FastClass.create(method.getReturnType(), memberLoader);
-    }
-
-    public FastClass<?>[] getParameterTypes() {
-        return Arrays.stream(method.getParameterTypes())
-                .map(pt -> FastClass.create(pt, memberLoader))
-                .toArray(FastClass[]::new);
     }
 
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
