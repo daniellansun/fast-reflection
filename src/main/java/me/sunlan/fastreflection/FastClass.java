@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FastClass<T> {
     public static <T> FastClass<T> create(Class<T> clazz) {
-        return create(clazz, new FastMemberLoader(Thread.currentThread().getContextClassLoader()));
+        return create(clazz, new FastMemberLoader());
     }
 
     public static <T> FastClass<T>  create(Class<T> clazz, ClassDefinable classDefiner) {

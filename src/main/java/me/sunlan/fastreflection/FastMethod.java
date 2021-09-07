@@ -102,7 +102,7 @@ public abstract class FastMethod implements FastMember {
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
 
     public static FastMethod create(Method method) {
-        return create(method, new FastMemberLoader(Thread.currentThread().getContextClassLoader()));
+        return create(method, new FastMemberLoader());
     }
 
     public static FastMethod create(Method method, ClassDefinable classDefiner) {
