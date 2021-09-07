@@ -79,6 +79,21 @@ public class FastMethodPerfTest {
         FAST_STRING_CONSTRUCTOR_CHAR_ARRAY.invoke(CHAR_ARRAY_OBJECT);
     }
 
+    @Benchmark
+    public boolean method_direct_StringStartsWith_Return() {
+        return "abc".startsWith("a");
+    }
+
+    @Benchmark
+    public Object method_reflect_StringStartsWith_Return() throws Throwable {
+        return STARTSWITH_METHOD.invoke("abc", "a");
+    }
+
+    @Benchmark
+    public Object method_fastreflect_StringStartsWith_Return() throws Throwable {
+        return FAST_STARTSWITH_METHOD.invoke("abc", "a");
+    }
+
     private static final Method STARTSWITH_METHOD;
     private static final FastMethod FAST_STARTSWITH_METHOD;
 
