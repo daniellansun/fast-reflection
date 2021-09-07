@@ -28,8 +28,8 @@ public class FastClass<T> {
         return create(clazz, new FastMemberLoader());
     }
 
-    public static <T> FastClass<T>  create(Class<T> clazz, ClassDefinable classDefiner) {
-        return new FastClass<>(clazz, classDefiner);
+    public static <T> FastClass<T>  create(Class<T> clazz, MemberLoadable memberLoader) {
+        return new FastClass<>(clazz, memberLoader);
     }
 
     public String getName() {
@@ -78,12 +78,12 @@ public class FastClass<T> {
     }
 
     private FastMethod getOrCreate(Method m) {
-        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, classDefiner));
+        return fastMethodMapCache.computeIfAbsent(m, k -> FastMethod.create(m, memberLoader));
     }
 
-    private FastClass(Class<T> clazz, ClassDefinable classDefiner) {
+    private FastClass(Class<T> clazz, MemberLoadable memberLoader) {
         this.clazz = clazz;
-        this.classDefiner = classDefiner;
+        this.memberLoader = memberLoader;
     }
 
     @Override
@@ -91,12 +91,12 @@ public class FastClass<T> {
         if (this == o) return true;
         if (!(o instanceof FastClass)) return false;
         FastClass<?> fastClass = (FastClass<?>) o;
-        return classDefiner == fastClass.classDefiner && clazz.equals(fastClass.clazz);
+        return memberLoader == fastClass.memberLoader && clazz.equals(fastClass.clazz);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clazz, classDefiner);
+        return Objects.hash(clazz, memberLoader);
     }
 
     @Override
@@ -105,6 +105,6 @@ public class FastClass<T> {
     }
 
     private final Class<T> clazz;
-    private final ClassDefinable classDefiner;
+    private final MemberLoadable memberLoader;
     private final Map<Method, FastMethod> fastMethodMapCache = new ConcurrentHashMap<>();
 }

@@ -65,13 +65,13 @@ public abstract class FastMethod implements FastMember {
     FastMethod() {
         this.method = null;
         this.declaringClass = null;
-        this.classDefiner = null;
+        this.memberLoader = null;
     }
 
-    public FastMethod(Method method, ClassDefinable classDefiner) {
+    public FastMethod(Method method, MemberLoadable memberLoader) {
         this.method = method;
-        this.classDefiner = classDefiner;
-        this.declaringClass = FastClass.create(method.getDeclaringClass(), classDefiner);
+        this.memberLoader = memberLoader;
+        this.declaringClass = FastClass.create(method.getDeclaringClass(), memberLoader);
     }
 
     @Override
@@ -90,12 +90,12 @@ public abstract class FastMethod implements FastMember {
     }
 
     public FastClass<?> getReturnType() {
-        return FastClass.create(method.getReturnType(), classDefiner);
+        return FastClass.create(method.getReturnType(), memberLoader);
     }
 
     public FastClass<?>[] getParameterTypes() {
         return Arrays.stream(method.getParameterTypes())
-                .map(pt -> FastClass.create(pt, classDefiner))
+                .map(pt -> FastClass.create(pt, memberLoader))
                 .toArray(FastClass[]::new);
     }
 
@@ -105,18 +105,18 @@ public abstract class FastMethod implements FastMember {
         return create(method, new FastMemberLoader());
     }
 
-    public static FastMethod create(Method method, ClassDefinable classDefiner) {
+    public static FastMethod create(Method method, MemberLoadable memberLoader) {
         String className = "me.sunlan.fastreflection.runtime.FastMethod_" + md5(method.toGenericString());
 //        long b = System.currentTimeMillis();
         byte[] bytes = gen(className, method);
 //        long m = System.currentTimeMillis();
 //        System.out.println("gen: " + (m - b) + "ms");
 
-        Class<?> fastMethodClass = classDefiner.defineClass(className, bytes);
+        Class<?> fastMethodClass = memberLoader.load(className, bytes);
 //        long end = System.currentTimeMillis();
 //        System.out.println("defineClass: " + (end - m) + "ms");
         try {
-            return (FastMethod) fastMethodClass.getConstructor(Method.class, ClassDefinable.class).newInstance(method, classDefiner);
+            return (FastMethod) fastMethodClass.getConstructor(Method.class, MemberLoadable.class).newInstance(method, memberLoader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new FastMemberInstantiationException(e);
         } catch (ExceptionInInitializerError e) {
@@ -150,7 +150,7 @@ public abstract class FastMethod implements FastMember {
             mv.visitLabel(label2);
             mv.visitLocalVariable("this", classDescriptor, null, label0, label2, 0);
             mv.visitLocalVariable("method", "Ljava/lang/reflect/Method;", null, label0, label2, 1);
-            mv.visitLocalVariable("classDefiner", "Lme/sunlan/fastreflection/ClassDefinable;", null, label0, label2, 2);
+            mv.visitLocalVariable("memberLoader", "Lme/sunlan/fastreflection/MemberLoadable;", null, label0, label2, 2);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
         }
@@ -270,7 +270,7 @@ public abstract class FastMethod implements FastMember {
 
     private final Method method;
     private final FastClass<?> declaringClass;
-    private final ClassDefinable classDefiner;
+    private final MemberLoadable memberLoader;
 
     private static final int CLASSWRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
     private static final int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;
@@ -278,7 +278,7 @@ public abstract class FastMethod implements FastMember {
     private static final int ACC_FIELD = ACC_PRIVATE | ACC_FINAL | ACC_STATIC;
     private static final int ACC_METHOD = ACC_PUBLIC | ACC_VARARGS;
     private static final String METHODHANDLE_DESCRIPTOR = "Ljava/lang/invoke/MethodHandle;";
-    private static final String CONSTRUCTOR_DESCRIPTOR = "(Ljava/lang/reflect/Method;Lme/sunlan/fastreflection/ClassDefinable;)V";
+    private static final String CONSTRUCTOR_DESCRIPTOR = "(Ljava/lang/reflect/Method;Lme/sunlan/fastreflection/MemberLoadable;)V";
     private static final String FASTMETHOD_INTERNAL_NAME = FastMethod.class.getName().replace('.', '/');
     private static final String METHODHANDLE_INTERNAL_NAME = "java/lang/invoke/MethodHandles";
     private static final String LOOKUP_INTERNAL_NAME = "java/lang/invoke/MethodHandles$Lookup";

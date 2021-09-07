@@ -18,6 +18,6 @@
  */
 package me.sunlan.fastreflection;
 
-public interface ClassDefinable {
-    Class<?> defineClass(String className, byte[] bytes);
+public interface MemberLoadable {
+    Class<?> load(String className, byte[] bytes);
 }

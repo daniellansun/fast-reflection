@@ -18,7 +18,7 @@
  */
 package me.sunlan.fastreflection;
 
-public class FastMemberLoader extends ClassLoader implements ClassDefinable {
+public class FastMemberLoader extends ClassLoader implements MemberLoadable {
     public FastMemberLoader() {
         this(Thread.currentThread().getContextClassLoader());
     }
@@ -28,7 +28,7 @@ public class FastMemberLoader extends ClassLoader implements ClassDefinable {
     }
 
     @Override
-    public synchronized Class<?> defineClass(String className, byte[] bytes) {
+    public synchronized Class<?> load(String className, byte[] bytes) {
         Class<?> result = findLoadedClass(className);
         if (null != result) {
             return result;
