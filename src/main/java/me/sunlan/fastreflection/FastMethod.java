@@ -214,7 +214,7 @@ public abstract class FastMethod implements FastMember {
             }
             mv.visitMethodInsn(INVOKESTATIC, "java/lang/invoke/MethodType", "methodType", "(Ljava/lang/Class;[Ljava/lang/Class;)Ljava/lang/invoke/MethodType;", false);
             mv.visitMethodInsn(INVOKEVIRTUAL, LOOKUP_INTERNAL_NAME, isStaticMethod ? "findStatic" : "findVirtual", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;", false);
-            mv.visitVarInsn(ASTORE, 0);
+            mv.visitFieldInsn(PUTSTATIC, internalClassName, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR);
             mv.visitLabel(label1);
             Label label4 = new Label();
             mv.visitJumpInsn(GOTO, label4);
@@ -226,12 +226,7 @@ public abstract class FastMethod implements FastMember {
             mv.visitMethodInsn(INVOKESPECIAL, FASTMEMBERINSTANTIATIONEXCEPTION_INTERNAL_NAME, "<init>", "(Ljava/lang/Throwable;)V", false);
             mv.visitInsn(ATHROW);
             mv.visitLabel(label4);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(PUTSTATIC, internalClassName, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR);
-            Label label6 = new Label();
-            mv.visitLabel(label6);
             mv.visitInsn(RETURN);
-            mv.visitLocalVariable("mh", METHODHANDLE_DESCRIPTOR, null, label0, label6, 0);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
         }

@@ -21,6 +21,7 @@ package me.sunlan.fastreflection;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +29,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FastMethodTest {
@@ -113,5 +115,15 @@ public class FastMethodTest {
         FastMethod fm = FastMethod.create(String.class.getMethod("startsWith", String.class));
         FastClass<?> returnType = fm.getReturnType();
         assertEquals("boolean", returnType.getName());
+    }
+
+    @Test
+    public void testInvisibleMethod() {
+        FastMemberInstantiationException exception = assertThrows(FastMemberInstantiationException.class, () -> {
+            FastMethod.create(AbstractList.class.getDeclaredMethod("removeRange", int.class, int.class));
+        });
+        Throwable cause = exception.getCause();
+        assertTrue(cause instanceof IllegalAccessException);
+        assertEquals("no such method: java.util.AbstractList.removeRange(int,int)void/invokeVirtual", cause.getMessage());
     }
 }
