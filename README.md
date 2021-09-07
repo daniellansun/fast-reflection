@@ -4,6 +4,7 @@ Yet another fast alternative for Java reflection, making dynamic calls as effici
 ## Usage
 See the tests:
 * [tests for `FastMethod`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastMethodTest.java)
+* [tests for `FastConstructor`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastConstructorTest.java)
 * [tests for `FastClass`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastClassTest.java)
 
 ## Performance Test
@@ -20,9 +21,12 @@ Run `gradlew jmh` to get the performance test result.
 * Benchmark mode: Average time, time/op
 
 ```
-Benchmark                                        Mode  Cnt   Score   Error  Units
-FastMethodPerfTest.direct_StringStartsWith       avgt   15   0.471 ± 0.054  ns/op
-FastMethodPerfTest.fastreflect_StringStartsWith  avgt   15   0.463 ± 0.017  ns/op
-FastMethodPerfTest.reflect_StringStartsWith      avgt   15  10.643 ± 0.969  ns/op
+Benchmark                                                       Mode  Cnt   Score   Error  Units
+FastMethodPerfTest.direct_constructor_StringCtorCharArray       avgt   15   5.592 ± 0.136  ns/op
+FastMethodPerfTest.direct_method_StringStartsWith               avgt   15   0.742 ± 0.022  ns/op
+FastMethodPerfTest.fastreflect_constructor_StringCtorCharArray  avgt   15   5.285 ± 0.147  ns/op
+FastMethodPerfTest.fastreflect_method_StringStartsWith          avgt   15   0.768 ± 0.020  ns/op
+FastMethodPerfTest.reflect_constructor_StringCtorCharArray      avgt   15  12.633 ± 0.293  ns/op
+FastMethodPerfTest.reflect_method_StringStartsWith              avgt   15  11.166 ± 0.339  ns/op
 ```
-(**Note:** fast reflection runs almost as fast as direct call and much faster than normal reflection)
+(**Note:** fast-reflection runs almost as fast as direct call and much faster than normal reflection)
