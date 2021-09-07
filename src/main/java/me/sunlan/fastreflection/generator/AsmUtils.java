@@ -16,7 +16,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package me.sunlan.fastreflection;
+package me.sunlan.fastreflection.generator;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
