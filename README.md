@@ -44,6 +44,11 @@ FastMethodPerfTest.method_reflect_accessible_StringStartsWith          avgt   15
 * instance method handle runs almost as slow as normal reflection
 
 ## FAQ
+* **Q:** How fast can fast-reflection run?
+* **A:** fast-reflection runs almost as fast as direct calls, and much faster than normal reflection(see the above performance test result).
+
 * **Q:** Method handles are available in JDK since Java 7, and they don't require any additional dependency. I'm not sure why custom libraries could be preferred over method handles.
 * **A:** Only constant method handles can gain the best performance, but reflection runs on the fly, so it's impossible for us to hard-code all constant method handles we may use. The fast-reflection will generate constants method handles for dynamic calls to gain the best performance, this is the reason why we need the custom library. BTW, instance method handles are much flexible but can not help us gain better performance because they run almost as slow as normal reflection.
 
+* **Q:** What dependencies does fast-reflection require?
+* **A:** Just the ASM.
