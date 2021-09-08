@@ -32,15 +32,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- * Benchmark                                        Mode  Cnt   Score   Error  Units
- * FastMethodPerfTest.direct_StringStartsWith       avgt   15   0.471 ± 0.054  ns/op
- * FastMethodPerfTest.fastreflect_StringStartsWith  avgt   15   0.463 ± 0.017  ns/op
- * FastMethodPerfTest.reflect_StringStartsWith      avgt   15  10.643 ± 0.969  ns/op
- *
- */
-
 @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(3)
@@ -49,49 +40,34 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 public class FastMethodPerfTest {
     @Benchmark
-    public void method_direct_StringStartsWith() {
-        "abc".startsWith("a");
-    }
-
-    @Benchmark
-    public void method_reflect_StringStartsWith() throws Throwable {
-        STARTSWITH_METHOD.invoke("abc", "a");
-    }
-
-    @Benchmark
-    public void method_fastreflect_StringStartsWith() throws Throwable {
-        FAST_STARTSWITH_METHOD.invoke("abc", "a");
-    }
-
-
-    @Benchmark
-    public void constructor_direct_StringCtorCharArray() {
-        new String(CHAR_ARRAY);
-    }
-
-    @Benchmark
-    public void constructor_reflect_StringCtorCharArray() throws Throwable {
-        STRING_CONSTRUCTOR_CHAR_ARRAY.newInstance(CHAR_ARRAY_OBJECT);
-    }
-
-    @Benchmark
-    public void constructor_fastreflect_StringCtorCharArray() throws Throwable {
-        FAST_STRING_CONSTRUCTOR_CHAR_ARRAY.invoke(CHAR_ARRAY_OBJECT);
-    }
-
-    @Benchmark
-    public boolean method_direct_StringStartsWith_Return() {
+    public boolean method_direct_StringStartsWith() {
         return "abc".startsWith("a");
     }
 
     @Benchmark
-    public Object method_reflect_StringStartsWith_Return() throws Throwable {
+    public Object method_reflect_StringStartsWith() throws Throwable {
         return STARTSWITH_METHOD.invoke("abc", "a");
     }
 
     @Benchmark
-    public Object method_fastreflect_StringStartsWith_Return() throws Throwable {
+    public Object method_fastreflect_StringStartsWith() throws Throwable {
         return FAST_STARTSWITH_METHOD.invoke("abc", "a");
+    }
+
+
+    @Benchmark
+    public Object constructor_direct_StringCtorCharArray() {
+        return new String(CHAR_ARRAY);
+    }
+
+    @Benchmark
+    public Object constructor_reflect_StringCtorCharArray() throws Throwable {
+        return STRING_CONSTRUCTOR_CHAR_ARRAY.newInstance(CHAR_ARRAY_OBJECT);
+    }
+
+    @Benchmark
+    public Object constructor_fastreflect_StringCtorCharArray() throws Throwable {
+        return FAST_STRING_CONSTRUCTOR_CHAR_ARRAY.invoke(CHAR_ARRAY_OBJECT);
     }
 
     private static final Method STARTSWITH_METHOD;
