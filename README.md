@@ -12,7 +12,7 @@ Run `gradlew jmh` to get the performance test result.
 
 * JMH version: 1.33
 * VM version: JDK 11.0.9, OpenJDK 64-Bit Server VM, 11.0.9+11-LTS
-* VM options: -Xms2g -Xms2g -XX:MetaspaceSize=512m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC
+* VM options: -Xms2g -Xmx2g -XX:MetaspaceSize=512m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC
 * Blackhole mode: full + dont-inline hint (default, use -Djmh.blackhole.autoDetect=true to auto-detect)
 * Warmup: 3 iterations, 1 s each
 * Measurement: 5 iterations, 1 s each
