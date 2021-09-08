@@ -22,14 +22,14 @@ Run `gradlew jmh` to get the performance test result.
 
 ```java
 Benchmark                                                              Mode  Cnt   Score   Error  Units
-FastMethodPerfTest.constructor_direct_StringCtorCharArray              avgt   15  12.101 ± 0.497  ns/op
-FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray         avgt   15  11.472 ± 0.345  ns/op
-FastMethodPerfTest.constructor_reflect_StringCtorCharArray             avgt   15  18.471 ± 0.510  ns/op
-FastMethodPerfTest.constructor_reflect_accessible_StringCtorCharArray  avgt   15  17.003 ± 0.528  ns/op
-FastMethodPerfTest.method_direct_StringStartsWith                      avgt   15   2.539 ± 0.075  ns/op
-FastMethodPerfTest.method_fastreflect_StringStartsWith                 avgt   15   3.411 ± 0.143  ns/op
-FastMethodPerfTest.method_reflect_StringStartsWith                     avgt   15  12.264 ± 0.682  ns/op
-FastMethodPerfTest.method_reflect_accessible_StringStartsWith          avgt   15   9.640 ± 0.732  ns/op
+FastMethodPerfTest.constructor_direct_StringCtorCharArray              avgt   15  13.959 ± 0.194  ns/op
+FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray         avgt   15  13.766 ± 0.294  ns/op
+FastMethodPerfTest.constructor_reflect_StringCtorCharArray             avgt   15  22.429 ± 0.599  ns/op
+FastMethodPerfTest.constructor_reflect_accessible_StringCtorCharArray  avgt   15  18.724 ± 2.333  ns/op
+FastMethodPerfTest.method_direct_StringStartsWith                      avgt   15   3.326 ± 0.262  ns/op
+FastMethodPerfTest.method_fastreflect_StringStartsWith                 avgt   15   4.323 ± 0.300  ns/op
+FastMethodPerfTest.method_reflect_StringStartsWith                     avgt   15  14.117 ± 0.626  ns/op
+FastMethodPerfTest.method_reflect_accessible_StringStartsWith          avgt   15  11.371 ± 0.681  ns/op
 ```
 
 **Note:**
