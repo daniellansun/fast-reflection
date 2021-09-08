@@ -35,3 +35,8 @@ FastMethodPerfTest.method_reflect_accessible_StringStartsWith          avgt   15
 **Note:**
 * fast-reflection runs almost as fast as direct call
 * much faster than normal reflection
+
+## FAQ
+* **Q:** Method handles are available in JDK since Java 7, and they don't require any additional dependency. I'm not sure why custom libraries could be preferred over method handles.
+* **A:** Only constant method handles can gain the best performance, but reflection runs on the fly, so it's impossible for us to hard-code all constant method handles we may use. The fast-reflection will generate constants method handles for dynamic calls to gain the best performance, this is the reason why we need the custom library.
+
