@@ -28,6 +28,8 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -50,24 +52,20 @@ public class FastMethodPerfTest {
     }
 
     @Benchmark
+    public Object method_reflect_accessible_StringStartsWith() throws Throwable {
+        return STARTSWITH_METHOD_ACCESSIBLE.invoke("abc", "a");
+    }
+
+    @Benchmark
+    public Object method_handle_StringStartsWith() throws Throwable {
+        return (boolean)STARTSWITH_METHOD_HANDLE.invokeExact("abc", "a");
+    }
+
+    @Benchmark
     public Object method_fastreflect_StringStartsWith() throws Throwable {
         return FAST_STARTSWITH_METHOD.invoke("abc", "a");
     }
 
-    @Benchmark
-    public boolean method_direct_StringEndsWith() {
-        return "abc".endsWith("c");
-    }
-
-    @Benchmark
-    public Object method_reflect_StringEndsWith_setAccessibleTrue() throws Throwable {
-        return ENDSWITH_METHOD.invoke("abc", "c");
-    }
-
-    @Benchmark
-    public Object method_fastreflect_StringEndsWith() throws Throwable {
-        return FAST_ENDSWITH_METHOD.invoke("abc", "c");
-    }
 
     @Benchmark
     public Object constructor_direct_StringCtorCharArray() {
@@ -80,17 +78,28 @@ public class FastMethodPerfTest {
     }
 
     @Benchmark
+    public Object constructor_reflect_accessible_StringCtorCharArray() throws Throwable {
+        return STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE.newInstance(CHAR_ARRAY_OBJECT);
+    }
+
+    @Benchmark
+    public Object constructor_handle_StringCtorCharArray() throws Throwable {
+        return (String)STRING_CONSTRUCTOR_CHAR_ARRAY_HANDLE.invokeExact(CHAR_ARRAY);
+    }
+
+    @Benchmark
     public Object constructor_fastreflect_StringCtorCharArray() throws Throwable {
         return FAST_STRING_CONSTRUCTOR_CHAR_ARRAY.invoke(CHAR_ARRAY_OBJECT);
     }
 
     private static final Method STARTSWITH_METHOD;
+    private static final Method STARTSWITH_METHOD_ACCESSIBLE;
+    private static final MethodHandle STARTSWITH_METHOD_HANDLE;
     private static final FastMethod FAST_STARTSWITH_METHOD;
 
-    private static final Method ENDSWITH_METHOD;
-    private static final FastMethod FAST_ENDSWITH_METHOD;
-
     private static final Constructor<String> STRING_CONSTRUCTOR_CHAR_ARRAY;
+    private static final Constructor<String> STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE;
+    private static final MethodHandle STRING_CONSTRUCTOR_CHAR_ARRAY_HANDLE;
     private static final FastConstructor<String> FAST_STRING_CONSTRUCTOR_CHAR_ARRAY;
     private static final char[] CHAR_ARRAY = {'a', 'b', 'c'};
     private static final Object CHAR_ARRAY_OBJECT = CHAR_ARRAY;
@@ -98,13 +107,15 @@ public class FastMethodPerfTest {
     static {
         try {
             STARTSWITH_METHOD = String.class.getMethod("startsWith", String.class);
+            STARTSWITH_METHOD_ACCESSIBLE = String.class.getMethod("startsWith", String.class);
+            STARTSWITH_METHOD_ACCESSIBLE.setAccessible(true);
+            STARTSWITH_METHOD_HANDLE = MethodHandles.publicLookup().unreflect(STARTSWITH_METHOD);
             FAST_STARTSWITH_METHOD = FastMethod.create(STARTSWITH_METHOD);
 
-            ENDSWITH_METHOD = String.class.getMethod("endsWith", String.class);
-            ENDSWITH_METHOD.setAccessible(true);
-            FAST_ENDSWITH_METHOD = FastMethod.create(ENDSWITH_METHOD);
-
             STRING_CONSTRUCTOR_CHAR_ARRAY = String.class.getConstructor(char[].class);
+            STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE = String.class.getConstructor(char[].class);
+            STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE.setAccessible(true);
+            STRING_CONSTRUCTOR_CHAR_ARRAY_HANDLE = MethodHandles.publicLookup().unreflectConstructor(STRING_CONSTRUCTOR_CHAR_ARRAY);
             FAST_STRING_CONSTRUCTOR_CHAR_ARRAY = FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY);
         } catch (Throwable t) {
             throw new RuntimeException(t);
