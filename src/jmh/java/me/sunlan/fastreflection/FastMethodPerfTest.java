@@ -54,6 +54,20 @@ public class FastMethodPerfTest {
         return FAST_STARTSWITH_METHOD.invoke("abc", "a");
     }
 
+    @Benchmark
+    public boolean method_direct_StringEndsWith() {
+        return "abc".endsWith("c");
+    }
+
+    @Benchmark
+    public Object method_reflect_StringEndsWith_setAccessibleTrue() throws Throwable {
+        return ENDSWITH_METHOD.invoke("abc", "c");
+    }
+
+    @Benchmark
+    public Object method_fastreflect_StringEndsWith() throws Throwable {
+        return FAST_ENDSWITH_METHOD.invoke("abc", "c");
+    }
 
     @Benchmark
     public Object constructor_direct_StringCtorCharArray() {
@@ -73,6 +87,9 @@ public class FastMethodPerfTest {
     private static final Method STARTSWITH_METHOD;
     private static final FastMethod FAST_STARTSWITH_METHOD;
 
+    private static final Method ENDSWITH_METHOD;
+    private static final FastMethod FAST_ENDSWITH_METHOD;
+
     private static final Constructor<String> STRING_CONSTRUCTOR_CHAR_ARRAY;
     private static final FastConstructor<String> FAST_STRING_CONSTRUCTOR_CHAR_ARRAY;
     private static final char[] CHAR_ARRAY = {'a', 'b', 'c'};
@@ -82,6 +99,10 @@ public class FastMethodPerfTest {
         try {
             STARTSWITH_METHOD = String.class.getMethod("startsWith", String.class);
             FAST_STARTSWITH_METHOD = FastMethod.create(STARTSWITH_METHOD);
+
+            ENDSWITH_METHOD = String.class.getMethod("endsWith", String.class);
+            ENDSWITH_METHOD.setAccessible(true);
+            FAST_ENDSWITH_METHOD = FastMethod.create(ENDSWITH_METHOD);
 
             STRING_CONSTRUCTOR_CHAR_ARRAY = String.class.getConstructor(char[].class);
             FAST_STRING_CONSTRUCTOR_CHAR_ARRAY = FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY);
