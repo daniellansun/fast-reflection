@@ -8,7 +8,7 @@ See the tests for now:
 * [tests for `FastClass`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastClassTest.java)
 
 ## Performance Test
-Run `gradlew jmh` to get the performance test result.
+### Run `gradlew jmh` to get the performance test result
 
 * JMH version: 1.33
 * VM version: JDK 11.0.9, OpenJDK 64-Bit Server VM, 11.0.9+11-LTS
@@ -36,11 +36,10 @@ FastMethodPerfTest.method_reflect_StringStartsWith                     avgt   15
 FastMethodPerfTest.method_reflect_accessible_StringStartsWith          avgt   15   8.921 ± 0.430  ns/op
 ```
 
-**Summary**
+### Summary
 * fast-reflection runs almost as fast as direct call
+* fast-reflection runs almost as fast as constant method handle
 * fast-reflection runs much faster than normal reflection
-* constant method handle runs almost as fast as direct call
-* constant method handle runs much faster than normal reflection
 * instance method handle runs almost as slow as normal reflection
 
 ## FAQ
