@@ -57,8 +57,13 @@ public class FastMethodPerfTest {
     }
 
     @Benchmark
-    public Object method_handle_StringStartsWith() throws Throwable {
-        return (boolean)STARTSWITH_METHOD_HANDLE.invokeExact("abc", "a");
+    public Object method_constant_handle_StringStartsWith() throws Throwable {
+        return (boolean) STARTSWITH_CONSTANT_METHOD_HANDLE.invokeExact("abc", "a");
+    }
+
+    @Benchmark
+    public Object method_instance_handle_StringStartsWith() throws Throwable {
+        return (boolean) startswithInstanceMethodHandle.invokeExact("abc", "a");
     }
 
     @Benchmark
@@ -83,8 +88,13 @@ public class FastMethodPerfTest {
     }
 
     @Benchmark
-    public Object constructor_handle_StringCtorCharArray() throws Throwable {
-        return (String)STRING_CONSTRUCTOR_CHAR_ARRAY_HANDLE.invokeExact(CHAR_ARRAY);
+    public Object constructor_constant_handle_StringCtorCharArray() throws Throwable {
+        return (String) STRING_CONSTRUCTOR_CHAR_ARRAY_CONSTANT_HANDLE.invokeExact(CHAR_ARRAY);
+    }
+
+    @Benchmark
+    public Object constructor_instance_handle_StringCtorCharArray() throws Throwable {
+        return (String) stringConstructorCharArrayInstanceHandle.invokeExact(CHAR_ARRAY);
     }
 
     @Benchmark
@@ -94,12 +104,14 @@ public class FastMethodPerfTest {
 
     private static final Method STARTSWITH_METHOD;
     private static final Method STARTSWITH_METHOD_ACCESSIBLE;
-    private static final MethodHandle STARTSWITH_METHOD_HANDLE;
+    private static final MethodHandle STARTSWITH_CONSTANT_METHOD_HANDLE;
+    private final MethodHandle startswithInstanceMethodHandle;
     private static final FastMethod FAST_STARTSWITH_METHOD;
 
     private static final Constructor<String> STRING_CONSTRUCTOR_CHAR_ARRAY;
     private static final Constructor<String> STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE;
-    private static final MethodHandle STRING_CONSTRUCTOR_CHAR_ARRAY_HANDLE;
+    private static final MethodHandle STRING_CONSTRUCTOR_CHAR_ARRAY_CONSTANT_HANDLE;
+    private final MethodHandle stringConstructorCharArrayInstanceHandle;
     private static final FastConstructor<String> FAST_STRING_CONSTRUCTOR_CHAR_ARRAY;
     private static final char[] CHAR_ARRAY = {'a', 'b', 'c'};
     private static final Object CHAR_ARRAY_OBJECT = CHAR_ARRAY;
@@ -109,14 +121,23 @@ public class FastMethodPerfTest {
             STARTSWITH_METHOD = String.class.getMethod("startsWith", String.class);
             STARTSWITH_METHOD_ACCESSIBLE = String.class.getMethod("startsWith", String.class);
             STARTSWITH_METHOD_ACCESSIBLE.setAccessible(true);
-            STARTSWITH_METHOD_HANDLE = MethodHandles.publicLookup().unreflect(STARTSWITH_METHOD);
+            STARTSWITH_CONSTANT_METHOD_HANDLE = MethodHandles.publicLookup().unreflect(STARTSWITH_METHOD);
             FAST_STARTSWITH_METHOD = FastMethod.create(STARTSWITH_METHOD);
 
             STRING_CONSTRUCTOR_CHAR_ARRAY = String.class.getConstructor(char[].class);
             STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE = String.class.getConstructor(char[].class);
             STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE.setAccessible(true);
-            STRING_CONSTRUCTOR_CHAR_ARRAY_HANDLE = MethodHandles.publicLookup().unreflectConstructor(STRING_CONSTRUCTOR_CHAR_ARRAY);
+            STRING_CONSTRUCTOR_CHAR_ARRAY_CONSTANT_HANDLE = MethodHandles.publicLookup().unreflectConstructor(STRING_CONSTRUCTOR_CHAR_ARRAY);
             FAST_STRING_CONSTRUCTOR_CHAR_ARRAY = FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
+
+    {
+        try {
+            startswithInstanceMethodHandle = MethodHandles.publicLookup().unreflect(STARTSWITH_METHOD);
+            stringConstructorCharArrayInstanceHandle = MethodHandles.publicLookup().unreflectConstructor(STRING_CONSTRUCTOR_CHAR_ARRAY);
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
