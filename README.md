@@ -11,7 +11,7 @@ See the tests for now:
 Run `gradlew jmh` to get the performance test result.
 
 * JMH version: 1.33
-* VM version: JDK 11.0.6, OpenJDK 64-Bit Server VM, 11.0.6+10-LTS
+* VM version: JDK 11.0.9, OpenJDK 64-Bit Server VM, 11.0.9+11-LTS
 * VM options: -Xms2g -Xms2g -XX:MetaspaceSize=512m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC
 * Blackhole mode: full + dont-inline hint (default, use -Djmh.blackhole.autoDetect=true to auto-detect)
 * Warmup: 3 iterations, 1 s each
@@ -21,12 +21,15 @@ Run `gradlew jmh` to get the performance test result.
 * Benchmark mode: Average time, time/op
 
 ```java
-Benchmark                                                       Mode  Cnt   Score    Error  Units
-FastMethodPerfTest.constructor_direct_StringCtorCharArray       avgt   15   5.854 ±  0.064  ns/op
-FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray  avgt   15   5.259 ±  0.228  ns/op
-FastMethodPerfTest.constructor_reflect_StringCtorCharArray      avgt   15  14.208 ±  0.586  ns/op
-FastMethodPerfTest.method_direct_StringStartsWith               avgt   15   0.493 ±  0.078  ns/op
-FastMethodPerfTest.method_fastreflect_StringStartsWith          avgt   15   0.443 ±  0.001  ns/op
-FastMethodPerfTest.method_reflect_StringStartsWith              avgt   15   8.525 ±  1.171  ns/op
+Benchmark                                                       Mode  Cnt   Score   Error  Units
+FastMethodPerfTest.constructor_direct_StringCtorCharArray       avgt   15  12.222 ± 0.542  ns/op
+FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray  avgt   15  11.529 ± 0.615  ns/op
+FastMethodPerfTest.constructor_reflect_StringCtorCharArray      avgt   15  19.444 ± 1.088  ns/op
+FastMethodPerfTest.method_direct_StringStartsWith               avgt   15   2.752 ± 0.281  ns/op
+FastMethodPerfTest.method_fastreflect_StringStartsWith          avgt   15   3.634 ± 0.394  ns/op
+FastMethodPerfTest.method_reflect_StringStartsWith              avgt   15  12.384 ± 1.310  ns/op
 ```
-(**Note:** fast-reflection runs almost as fast as direct call and much faster than normal reflection)
+
+**Note:**
+* fast-reflection runs almost as fast as direct call
+* much faster than normal reflection
