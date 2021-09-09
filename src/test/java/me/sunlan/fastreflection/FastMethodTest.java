@@ -24,11 +24,14 @@ import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,6 +78,15 @@ public class FastMethodTest {
         Object arg = new char[]{'1', '2', '3'};
         Object result = fm.invoke(null, arg);
         assertEquals("123", result);
+    }
+
+    @Test
+    public void testCollectionsReverse() throws Throwable {
+        FastMethod fm = FastMethod.create(Collections.class.getMethod("reverse", List.class));
+        List<String> list = new ArrayList<>(Arrays.asList("a", "b", "c"));
+        Object result = fm.invoke(null, list);
+        assertNull(result);
+        assertEquals(Arrays.asList("c", "b", "a"), list);
     }
 
     @Test
