@@ -125,7 +125,7 @@ public class FastMethodTest {
         });
         Throwable cause = exception.getCause();
         assertTrue(cause instanceof IllegalAccessException);
-        assertTrue(cause.getMessage().startsWith("member is protected: java.util.AbstractList.removeRange[Ljava.lang.Object;"));
+        assertTrue(cause.getMessage().startsWith("member is protected: java.util.AbstractList.removeRange"));
     }
 
     @Test
