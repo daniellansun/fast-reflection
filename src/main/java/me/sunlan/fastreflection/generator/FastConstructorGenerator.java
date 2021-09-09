@@ -67,7 +67,7 @@ public class FastConstructorGenerator implements FastMemberGenerator {
 
     @Override
     public void visitFindMethod(MethodVisitor mv, Member member) {
-        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/invoke/MethodHandles$Lookup", "unreflectConstructor", "(Ljava/lang/reflect/Constructor;)Ljava/lang/invoke/MethodHandle;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, LOOKUP_INTERNAL_NAME, "unreflectConstructor", "(Ljava/lang/reflect/Constructor;)Ljava/lang/invoke/MethodHandle;", false);
     }
 
     @Override
