@@ -1,5 +1,5 @@
 # fast-reflection
-Yet another fast alternative for Java reflection(WIP), making dynamic calls as efficient as direct calls.
+Yet another extremely fast alternative for Java reflection(WIP), making dynamic calls as efficient as direct calls.
 
 ## Usage
 See the tests for now:
