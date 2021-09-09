@@ -65,8 +65,6 @@ interface FastMemberGenerator {
             FieldVisitor fv = classWriter.visitField(ACC_FIELD, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR, null, null);
             fv.visitEnd();
         }
-
-        final String classDescriptor = "L" + internalClassName + ";";
         {
             final String constructorDescriptor = getConstructorDescriptor();
             MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", constructorDescriptor, null, null);
