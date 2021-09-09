@@ -21,19 +21,23 @@ See the tests for now:
 * Benchmark mode: Average time, time/op
 
 ```java
-Benchmark                                                              Mode  Cnt   Score   Error  Units
-FastMethodPerfTest.constructor_constant_handle_StringCtorCharArray     avgt   15  10.830 ± 0.057  ns/op
-FastMethodPerfTest.constructor_direct_StringCtorCharArray              avgt   15  10.803 ± 0.037  ns/op
-FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray         avgt   15  12.915 ± 0.022  ns/op
-FastMethodPerfTest.constructor_instance_handle_StringCtorCharArray     avgt   15  15.555 ± 0.057  ns/op
-FastMethodPerfTest.constructor_reflect_StringCtorCharArray             avgt   15  16.494 ± 0.050  ns/op
-FastMethodPerfTest.constructor_reflect_accessible_StringCtorCharArray  avgt   15  14.677 ± 1.627  ns/op
-FastMethodPerfTest.method_constant_handle_StringStartsWith             avgt   15   3.069 ± 0.212  ns/op
-FastMethodPerfTest.method_direct_StringStartsWith                      avgt   15   2.716 ± 0.037  ns/op
-FastMethodPerfTest.method_fastreflect_StringStartsWith                 avgt   15   3.204 ± 0.212  ns/op
-FastMethodPerfTest.method_instance_handle_StringStartsWith             avgt   15   9.785 ± 0.123  ns/op
-FastMethodPerfTest.method_reflect_StringStartsWith                     avgt   15   9.923 ± 0.450  ns/op
-FastMethodPerfTest.method_reflect_accessible_StringStartsWith          avgt   15   8.921 ± 0.430  ns/op
+Benchmark                                                                      Mode  Cnt   Score   Error  Units
+FastMethodPerfTest.constructor_constant_handle_StringCtorCharArray             avgt   15  12.329 ± 0.181  ns/op
+FastMethodPerfTest.constructor_constant_lambdametafactory_StringCtorCharArray  avgt   15  12.304 ± 0.134  ns/op
+FastMethodPerfTest.constructor_direct_StringCtorCharArray                      avgt   15  12.390 ± 0.211  ns/op
+FastMethodPerfTest.constructor_fastreflect_StringCtorCharArray                 avgt   15  14.696 ± 0.263  ns/op
+FastMethodPerfTest.constructor_instance_handle_StringCtorCharArray             avgt   15  17.857 ± 0.432  ns/op
+FastMethodPerfTest.constructor_instance_lambdametafactory_StringCtorCharArray  avgt   15  13.671 ± 0.188  ns/op
+FastMethodPerfTest.constructor_reflect_StringCtorCharArray                     avgt   15  18.692 ± 0.238  ns/op
+FastMethodPerfTest.constructor_reflect_accessible_StringCtorCharArray          avgt   15  16.860 ± 1.800  ns/op
+FastMethodPerfTest.method_constant_handle_StringStartsWith                     avgt   15   3.461 ± 0.027  ns/op
+FastMethodPerfTest.method_constant_lambdametafactory_StringStartsWith          avgt   15   3.745 ± 0.280  ns/op
+FastMethodPerfTest.method_direct_StringStartsWith                              avgt   15   3.307 ± 0.162  ns/op
+FastMethodPerfTest.method_fastreflect_StringStartsWith                         avgt   15   3.460 ± 0.043  ns/op
+FastMethodPerfTest.method_instance_handle_StringStartsWith                     avgt   15  11.531 ± 0.329  ns/op
+FastMethodPerfTest.method_instance_lambdametafactory_StringStartsWith          avgt   15   3.967 ± 0.092  ns/op
+FastMethodPerfTest.method_reflect_StringStartsWith                             avgt   15  11.701 ± 0.481  ns/op
+FastMethodPerfTest.method_reflect_accessible_StringStartsWith                  avgt   15  10.722 ± 0.695  ns/op
 ```
 
 ### Summary
