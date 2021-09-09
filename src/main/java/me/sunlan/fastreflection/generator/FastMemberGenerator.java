@@ -80,9 +80,6 @@ interface FastMemberGenerator {
             mv.visitInsn(RETURN);
             Label label2 = new Label();
             mv.visitLabel(label2);
-            mv.visitLocalVariable("this", classDescriptor, null, label0, label2, 0);
-            mv.visitLocalVariable("member", getMemberDescriptor(), null, label0, label2, 1);
-            mv.visitLocalVariable("memberLoader", "Lme/sunlan/fastreflection/MemberLoadable;", null, label0, label2, 2);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
         }
@@ -111,8 +108,6 @@ interface FastMemberGenerator {
             doReturn(mv, invokeMethodReturnType);
             Label label3 = new Label();
             mv.visitLabel(label3);
-            mv.visitLocalVariable("this", classDescriptor, null, label0, label3, 0);
-            visitLocalParameters(mv, label0, label3);
             mv.visitMaxs(0, 0);
             mv.visitEnd();
         }
@@ -164,8 +159,6 @@ interface FastMemberGenerator {
     String getInvokeMethodDescriptor();
 
     String getInvokeExactMethodDescriptor(Member member, Class<?>[] parameterTypes, Class<?> returnType);
-
-    void visitLocalParameters(MethodVisitor mv, Label label0, Label label3);
 
     int getArgsIndex();
 

@@ -19,7 +19,6 @@
 package me.sunlan.fastreflection.generator;
 
 import me.sunlan.fastreflection.FastMethod;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 
 import java.lang.reflect.Member;
@@ -91,12 +90,6 @@ public class FastMethodGenerator implements FastMemberGenerator {
     @Override
     public int getArgsIndex() {
         return 2;
-    }
-
-    @Override
-    public void visitLocalParameters(MethodVisitor mv, Label label0, Label label3) {
-        mv.visitLocalVariable("obj", "Ljava/lang/Object;", null, label0, label3, 1);
-        mv.visitLocalVariable("args", "[Ljava/lang/Object;", null, label0, label3, getArgsIndex());
     }
 
     @Override
