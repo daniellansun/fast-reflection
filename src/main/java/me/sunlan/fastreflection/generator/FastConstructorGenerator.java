@@ -23,6 +23,7 @@ import org.objectweb.asm.MethodVisitor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 
 import static me.sunlan.fastreflection.generator.AsmUtils.getMethodDescriptor;
 import static me.sunlan.fastreflection.generator.EncodingUtils.md5;
@@ -54,8 +55,9 @@ public class FastConstructorGenerator implements FastMemberGenerator {
     }
 
     @Override
-    public Class<?> getFindMethodReturnType(Member member) {
-        return void.class;
+    public void visitGetMember(MethodVisitor mv, Member member) {
+        boolean isPublic = Modifier.isPublic(member.getModifiers());
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", isPublic ? "getConstructor" : "getDeclaredConstructor", "([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;", false);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class FastConstructorGenerator implements FastMemberGenerator {
 
     @Override
     public void visitFindMethod(MethodVisitor mv, Member member) {
-        mv.visitMethodInsn(INVOKEVIRTUAL, LOOKUP_INTERNAL_NAME, "findConstructor", "(Ljava/lang/Class;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/invoke/MethodHandles$Lookup", "unreflectConstructor", "(Ljava/lang/reflect/Constructor;)Ljava/lang/invoke/MethodHandle;", false);
     }
 
     @Override

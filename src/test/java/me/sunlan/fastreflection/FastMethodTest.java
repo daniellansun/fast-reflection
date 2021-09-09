@@ -125,7 +125,7 @@ public class FastMethodTest {
         });
         Throwable cause = exception.getCause();
         assertTrue(cause instanceof IllegalAccessException);
-        assertEquals("no such method: java.util.AbstractList.removeRange(int,int)void/invokeVirtual", cause.getMessage());
+        assertTrue(cause.getMessage().startsWith("member is protected: java.util.AbstractList.removeRange[Ljava.lang.Object;"));
     }
 
     @Test

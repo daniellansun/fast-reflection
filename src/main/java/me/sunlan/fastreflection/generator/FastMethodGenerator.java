@@ -54,8 +54,9 @@ public class FastMethodGenerator implements FastMemberGenerator {
     }
 
     @Override
-    public Class<?> getFindMethodReturnType(Member member) {
-        return getInvokeMethodReturnType(member);
+    public void visitGetMember(MethodVisitor mv, Member member) {
+        boolean isPublic = Modifier.isPublic(member.getModifiers());
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", isPublic ? "getMethod" : "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false);
     }
 
     @Override
@@ -70,8 +71,7 @@ public class FastMethodGenerator implements FastMemberGenerator {
 
     @Override
     public void visitFindMethod(MethodVisitor mv, Member member) {
-        boolean isStatic = Modifier.isStatic(member.getModifiers());
-        mv.visitMethodInsn(INVOKEVIRTUAL, LOOKUP_INTERNAL_NAME, isStatic ? "findStatic" : "findVirtual", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/invoke/MethodHandles$Lookup", "unreflect", "(Ljava/lang/reflect/Method;)Ljava/lang/invoke/MethodHandle;", false);
     }
 
     @Override

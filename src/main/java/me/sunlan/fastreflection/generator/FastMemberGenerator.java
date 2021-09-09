@@ -119,11 +119,8 @@ interface FastMemberGenerator {
             Label label2 = new Label();
             mv.visitTryCatchBlock(label0, label1, label2, "java/lang/Throwable");
             mv.visitLabel(label0);
-            mv.visitMethodInsn(INVOKESTATIC, METHODHANDLE_INTERNAL_NAME, "lookup", "()Ljava/lang/invoke/MethodHandles$Lookup;", false);
             visitLdcTypeInsn(mv, member.getDeclaringClass());
             visitMemberName(mv, member);
-            final Class<?> findMethodReturnType = getFindMethodReturnType(member);
-            visitLdcTypeInsn(mv, findMethodReturnType);
             mv.visitLdcInsn(parameterTypes.length);
             mv.visitTypeInsn(ANEWARRAY, "java/lang/Class");
             if (parameterTypes.length > 0) mv.visitInsn(DUP);
@@ -133,7 +130,10 @@ interface FastMemberGenerator {
                 mv.visitInsn(AASTORE);
                 if (i != n - 1) mv.visitInsn(DUP);
             }
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/invoke/MethodType", "methodType", "(Ljava/lang/Class;[Ljava/lang/Class;)Ljava/lang/invoke/MethodType;", false);
+            visitGetMember(mv, member);
+            mv.visitVarInsn(ASTORE, 0);
+            mv.visitMethodInsn(INVOKESTATIC, METHODHANDLE_INTERNAL_NAME, "lookup", "()Ljava/lang/invoke/MethodHandles$Lookup;", false);
+            mv.visitVarInsn(ALOAD, 0);
             visitFindMethod(mv, member);
             mv.visitFieldInsn(PUTSTATIC, internalClassName, "METHOD_HANDLE", METHODHANDLE_DESCRIPTOR);
             mv.visitLabel(label1);
@@ -170,7 +170,7 @@ interface FastMemberGenerator {
 
     Class<?> getInvokeMethodReturnType(Member member);
 
-    Class<?> getFindMethodReturnType(Member member);
+    void visitGetMember(MethodVisitor mv, Member member);
 
     Class<?>[] getParameterTypes(Member member);
 
