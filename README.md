@@ -43,6 +43,7 @@ FastMethodPerfTest.method_reflect_accessible_StringStartsWith                  a
 ### Summary
 * fast-reflection runs almost as fast as direct call
 * fast-reflection runs almost as fast as constant method handle
+* fast-reflection runs almost as fast as lambda meta factory
 * fast-reflection runs much faster than normal reflection
 * instance method handle runs almost as slow as normal reflection
 
