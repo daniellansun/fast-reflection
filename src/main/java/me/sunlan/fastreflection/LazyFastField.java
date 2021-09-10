@@ -2,7 +2,7 @@ package me.sunlan.fastreflection;
 
 import java.util.function.Supplier;
 
-public class LazyFastField extends FastField {
+final class LazyFastField extends FastField {
     private final Supplier<FastField> supplier;
     private volatile FastField delegate;
 
