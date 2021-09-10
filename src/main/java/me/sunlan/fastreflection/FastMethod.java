@@ -64,14 +64,8 @@ public abstract class FastMethod extends FastExecutable {
     }
 
     public static FastMethod create(Method method, MemberLoadable memberLoader) {
-//        long b = System.currentTimeMillis();
         ClassData classData = FastMethodGenerator.INSTANCE.generate(method);
-//        long m = System.currentTimeMillis();
-//        System.out.println("gen: " + (m - b) + "ms");
-
         Class<?> fastMethodClass = memberLoader.load(classData.getName(), classData.getBytes());
-//        long end = System.currentTimeMillis();
-//        System.out.println("defineClass: " + (end - m) + "ms");
         try {
             return (FastMethod) fastMethodClass.getConstructor(Method.class, MemberLoadable.class).newInstance(method, memberLoader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

@@ -33,13 +33,13 @@ import static me.sunlan.fastreflection.generator.EncodingUtils.md5;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
-public class FastMethodGenerator implements FastMemberGenerator {
+public class FastMethodGenerator extends FastExecutableGenerator {
     public static final FastMethodGenerator INSTANCE = new FastMethodGenerator();
 
-    private FastMethodGenerator() {}
+    protected FastMethodGenerator() {}
 
     @Override
-    public Class<FastMethod> getFastMemberClass() {
+    public Class<? extends FastMethod> getFastMemberClass() {
         return FastMethod.class;
     }
 

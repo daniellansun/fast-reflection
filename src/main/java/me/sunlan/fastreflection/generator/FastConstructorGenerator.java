@@ -29,7 +29,7 @@ import static me.sunlan.fastreflection.generator.AsmUtils.getMethodDescriptor;
 import static me.sunlan.fastreflection.generator.EncodingUtils.md5;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
-public class FastConstructorGenerator implements FastMemberGenerator {
+public class FastConstructorGenerator extends FastExecutableGenerator {
     public static final FastConstructorGenerator INSTANCE = new FastConstructorGenerator();
 
     private FastConstructorGenerator() {}
