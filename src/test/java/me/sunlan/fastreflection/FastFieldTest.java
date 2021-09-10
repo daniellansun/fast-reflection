@@ -39,12 +39,27 @@ public class FastFieldTest {
     }
 
     @Test
+    public void testGet2() throws Throwable {
+        FastField ff = FastField.create(Person.class.getField("EYE_COUNT"));
+        int result = (int) ff.get(null);
+        assertEquals(2, result);
+    }
+
+    @Test
     public void testSet() throws Throwable {
         FastField ff = FastField.create(Person.class.getField("name"));
         String name = "Daniel";
         Person person = new Person(name);
         ff.set(person, "sunlan");
         assertEquals("sunlan", person.name);
+    }
+
+    @Test
+    public void testSet2() throws Throwable {
+        FastField ff = FastField.create(Person.class.getField("JUST_FOR_FASTFIELDTEST_TESTSET2"));
+        int newValue = 6;
+        ff.set(null, newValue);
+        assertEquals(newValue, Person.JUST_FOR_FASTFIELDTEST_TESTSET2);
     }
 
     @Test

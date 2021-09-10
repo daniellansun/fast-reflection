@@ -1,6 +1,7 @@
 package me.sunlan.fastreflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 public class FastField implements FastMember {
@@ -26,7 +27,8 @@ public class FastField implements FastMember {
 
     public static FastField create(Field field, MemberLoadable memberLoader) {
         FastFieldGetter fastFieldGetter = FastFieldGetter.create(field, memberLoader);
-        FastFieldSetter fastFieldSetter = FastFieldSetter.create(field, memberLoader);
+        FastFieldSetter fastFieldSetter = Modifier.isFinal(field.getModifiers())
+                                            ? null : FastFieldSetter.create(field, memberLoader);
         return new FastField(field, memberLoader, fastFieldGetter, fastFieldSetter);
     }
 
@@ -35,6 +37,9 @@ public class FastField implements FastMember {
     }
 
     public void set(Object obj, Object value) throws Throwable {
+        if (null == fastFieldSetter) {
+            throw new IllegalAccessException("unexpected set of a final field: " + field.toString());
+        }
         fastFieldSetter.set(obj, value);
     }
 
