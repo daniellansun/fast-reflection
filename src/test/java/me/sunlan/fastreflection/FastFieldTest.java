@@ -20,6 +20,8 @@ package me.sunlan.fastreflection;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,9 +42,14 @@ public class FastFieldTest {
 
     @Test
     public void testGet2() throws Throwable {
-        FastField ff = FastField.create(Person.class.getField("EYE_COUNT"));
-        int result = (int) ff.get(null);
-        assertEquals(2, result);
+        Field sizeField = Integer.class.getField("SIZE");
+        FastField ff = FastField.create(sizeField);
+        MethodHandle sizeGetter = MethodHandles.publicLookup().unreflectGetter(sizeField);
+        int expected = (int) sizeField.get(null);
+        int result1 = (int) sizeGetter.invokeExact();
+        int result2 = (int) ff.get(null);
+        assertEquals(expected, result1);
+        assertEquals(expected, result2);
     }
 
     @Test

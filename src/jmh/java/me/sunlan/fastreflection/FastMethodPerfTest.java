@@ -34,6 +34,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -62,13 +63,13 @@ public class FastMethodPerfTest {
     }
 
     @Benchmark
-    public Object method_constant_handle_StringStartsWith() throws Throwable {
+    public boolean method_constant_handle_StringStartsWith() throws Throwable {
         return (boolean) STRING_METHOD_STARTSWITH_CONSTANT_HANDLE.invokeExact("abc", "a");
     }
 
     @Benchmark
-    public Object method_instance_handle_StringStartsWith() throws Throwable {
-        return (boolean) startswithInstanceMethodHandle.invokeExact("abc", "a");
+    public boolean method_instance_handle_StringStartsWith() throws Throwable {
+        return (boolean) stringMethodStartswithInstanceHandle.invokeExact("abc", "a");
     }
 
     @Benchmark
@@ -126,10 +127,41 @@ public class FastMethodPerfTest {
         return stringCharArrayInstanceFunction.apply(CHAR_ARRAY_OBJECT);
     }
 
+
+    @Benchmark
+    public int field_direct_IntegerSize() {
+        return Integer.SIZE;
+    }
+
+    @Benchmark
+    public Object field_reflect_IntegerSize() throws Throwable {
+        return INTEGER_FIELD_SIZE.get(null);
+    }
+
+    @Benchmark
+    public Object field_reflect_accessible_IntegerSize() throws Throwable {
+        return INTEGER_FIELD_SIZE_ACCESSIBLE.get(null);
+    }
+
+    @Benchmark
+    public int field_constant_handle_IntegerSize() throws Throwable {
+        return (int) INTEGER_FIELD_SIZE_CONSTANT_HANDLE.invokeExact();
+    }
+
+    @Benchmark
+    public Object field_instance_handle_IntegerSize() throws Throwable {
+        return (int) integerFieldSizeInstanceHandle.invokeExact();
+    }
+
+    @Benchmark
+    public Object field_fastreflect_IntegerSize() throws Throwable {
+        return INTEGER_FAST_FIELD_SIZE.get(null);
+    }
+
     private static final Method STRING_METHOD_STARTSWITH;
     private static final Method STRING_METHOD_STARTSWITH_ACCESSIBLE;
     private static final MethodHandle STRING_METHOD_STARTSWITH_CONSTANT_HANDLE;
-    private final MethodHandle startswithInstanceMethodHandle;
+    private final MethodHandle stringMethodStartswithInstanceHandle;
     private static final FastMethod STRING_FAST_METHOD_STARTSWITH;
     private static final BiFunction STRING_CONSTANT_FUNCTION_STARTSWITH;
 
@@ -142,6 +174,13 @@ public class FastMethodPerfTest {
     private static final Object CHAR_ARRAY_OBJECT = CHAR_ARRAY;
     private static final Function STRING_CONSTRUCTOR_CHAR_ARRAY_CONSTANT_FUNCTION;
 
+
+    private static final Field INTEGER_FIELD_SIZE;
+    private static final Field INTEGER_FIELD_SIZE_ACCESSIBLE;
+    private static final MethodHandle INTEGER_FIELD_SIZE_CONSTANT_HANDLE;
+    private final MethodHandle integerFieldSizeInstanceHandle;
+    private static final FastField INTEGER_FAST_FIELD_SIZE;
+
     static {
         try {
             STRING_METHOD_STARTSWITH = String.class.getMethod("startsWith", String.class);
@@ -151,13 +190,18 @@ public class FastMethodPerfTest {
             STRING_FAST_METHOD_STARTSWITH = FastMethod.create(STRING_METHOD_STARTSWITH);
             STRING_CONSTANT_FUNCTION_STARTSWITH = createStartsWithFunction();
 
-
             STRING_CONSTRUCTOR_CHAR_ARRAY = String.class.getConstructor(char[].class);
             STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE = String.class.getConstructor(char[].class);
             STRING_CONSTRUCTOR_CHAR_ARRAY_ACCESSIBLE.setAccessible(true);
             STRING_CONSTRUCTOR_CHAR_ARRAY_CONSTANT_HANDLE = MethodHandles.publicLookup().unreflectConstructor(STRING_CONSTRUCTOR_CHAR_ARRAY);
             STRING_FAST_CONSTRUCTOR_CHAR_ARRAY = FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY);
             STRING_CONSTRUCTOR_CHAR_ARRAY_CONSTANT_FUNCTION = createStringConstructorCharArrayFunction();
+
+            INTEGER_FIELD_SIZE = Integer.class.getField("SIZE");
+            INTEGER_FIELD_SIZE_ACCESSIBLE = Integer.class.getField("SIZE");
+            INTEGER_FIELD_SIZE_ACCESSIBLE.setAccessible(true);
+            INTEGER_FIELD_SIZE_CONSTANT_HANDLE = MethodHandles.publicLookup().unreflectGetter(INTEGER_FIELD_SIZE);
+            INTEGER_FAST_FIELD_SIZE = FastField.create(INTEGER_FIELD_SIZE);
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
@@ -188,7 +232,9 @@ public class FastMethodPerfTest {
 
     {
         try {
-            startswithInstanceMethodHandle = MethodHandles.publicLookup().unreflect(STRING_METHOD_STARTSWITH);
+            integerFieldSizeInstanceHandle = MethodHandles.publicLookup().unreflectGetter(INTEGER_FIELD_SIZE);
+
+            stringMethodStartswithInstanceHandle = MethodHandles.publicLookup().unreflect(STRING_METHOD_STARTSWITH);
             stringConstructorCharArrayInstanceHandle = MethodHandles.publicLookup().unreflectConstructor(STRING_CONSTRUCTOR_CHAR_ARRAY);
 
             stringInstanceFunctionStartswith = createStartsWithFunction();
