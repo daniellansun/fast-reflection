@@ -188,4 +188,50 @@ class FastClassTest {
         FastClass<String> fc = FastClass.create(clazz);
         assertSame(clazz, fc.getRawClass());
     }
+
+    @Test
+    public void testGetField() throws Throwable {
+        FastClass<Person> fc = FastClass.create(Person.class);
+        FastField ff = fc.getField("name");
+        String name = "Daniel";
+        Person person = new Person(name);
+        String result = (String) ff.get(person);
+        assertEquals(name, result);
+    }
+
+    @Test
+    public void testGetDeclaredField() throws Throwable {
+        FastClass<Person> fc = FastClass.create(Person.class);
+        FastField ff = fc.getDeclaredField("name");
+        String name = "Daniel";
+        Person person = new Person(name);
+        String result = (String) ff.get(person);
+        assertEquals(name, result);
+    }
+
+    @Test
+    public void testGetFields() throws Throwable {
+        FastClass<Person> fc = FastClass.create(Person.class);
+        FastField ff = Arrays.stream(fc.getFields())
+                .filter(f -> "name".equals(f.getName()))
+                .findAny()
+                .orElseThrow(() -> new AssertionError("field `name` not found"));
+        String name = "Daniel";
+        Person person = new Person(name);
+        String result = (String) ff.get(person);
+        assertEquals(name, result);
+    }
+
+    @Test
+    public void testGetDeclaredFields() throws Throwable {
+        FastClass<Person> fc = FastClass.create(Person.class);
+        FastField ff = Arrays.stream(fc.getDeclaredFields())
+                .filter(f -> "name".equals(f.getName()))
+                .findAny()
+                .orElseThrow(() -> new AssertionError("field `name` not found"));
+        String name = "Daniel";
+        Person person = new Person(name);
+        String result = (String) ff.get(person);
+        assertEquals(name, result);
+    }
 }

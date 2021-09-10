@@ -4,6 +4,14 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 public class FastField implements FastMember {
+    protected FastField() {
+        this.field = null;
+        this.memberLoader = null;
+        this.declaringClass = null;
+        this.fastFieldGetter = null;
+        this.fastFieldSetter = null;
+    }
+
     private FastField(Field field, MemberLoadable memberLoader, FastFieldGetter fastFieldGetter, FastFieldSetter fastFieldSetter) {
         this.field = field;
         this.memberLoader = memberLoader;

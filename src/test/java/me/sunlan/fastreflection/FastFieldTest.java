@@ -73,10 +73,4 @@ public class FastFieldTest {
         assertEquals(field.toString(), ff.toString());
     }
 
-    public static class Person {
-        public String name;
-        public Person(String name) {
-            this.name = name;
-        }
-    }
 }

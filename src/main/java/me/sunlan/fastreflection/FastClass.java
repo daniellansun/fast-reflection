@@ -19,6 +19,7 @@
 package me.sunlan.fastreflection;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -70,23 +71,42 @@ public class FastClass<T> {
 
     public FastConstructor<T> getConstructor(Class<?>... parameterTypes) throws NoSuchMethodException {
         Constructor<T> constructor = clazz.getConstructor(parameterTypes);
-        return FastConstructor.create(constructor, memberLoader);
+        return getOrCreateConstructor(constructor);
     }
-
 
     public FastConstructor<T> getDeclaredConstructor(Class<?>... parameterTypes) throws NoSuchMethodException {
         Constructor<T> constructor = clazz.getDeclaredConstructor(parameterTypes);
-        return FastConstructor.create(constructor, memberLoader);
+        return getOrCreateConstructor(constructor);
     }
 
     public FastConstructor<?>[] getConstructors() {
-        Constructor<?>[] constructors = clazz.getConstructors();
+        Constructor[] constructors = clazz.getConstructors();
         return doGetConstructors(constructors);
     }
 
     public FastConstructor<?>[] getDeclaredConstructors() {
-        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        Constructor[] constructors = clazz.getDeclaredConstructors();
         return doGetConstructors(constructors);
+    }
+
+    public FastField getField(String name) throws NoSuchFieldException {
+        Field field = clazz.getField(name);
+        return getOrCreateField(field);
+    }
+
+    public FastField getDeclaredField(String name) throws NoSuchFieldException {
+        Field field = clazz.getDeclaredField(name);
+        return getOrCreateField(field);
+    }
+
+    public FastField[] getFields() {
+        Field[] fields = clazz.getFields();
+        return doGetFields(fields);
+    }
+
+    public FastField[] getDeclaredFields() {
+        Field[] fields = clazz.getDeclaredFields();
+        return doGetFields(fields);
     }
 
     public Class<T> getRawClass() {
@@ -99,14 +119,24 @@ public class FastClass<T> {
                 .toArray(FastMethod[]::new);
     }
 
-    private FastConstructor<?>[] doGetConstructors(Constructor<?>[] constructors) {
+    private FastConstructor<T>[] doGetConstructors(Constructor<T>[] constructors) {
         return Arrays.stream(constructors)
                 .map(constructor -> new LazyFastConstructor<>(() -> getOrCreateConstructor(constructor)))
                 .toArray(FastConstructor[]::new);
     }
 
-    private FastConstructor<?> getOrCreateConstructor(Constructor<?> constructor) {
-        return (FastConstructor<?>) getOrCreate(constructor, m -> FastConstructor.create((Constructor<?>) m, memberLoader));
+    private FastField[] doGetFields(Field[] fields) {
+        return Arrays.stream(fields)
+                .map(field -> new LazyFastField(() -> getOrCreateField(field)))
+                .toArray(FastField[]::new);
+    }
+
+    private FastConstructor<T> getOrCreateConstructor(Constructor<T> constructor) {
+        return (FastConstructor<T>) getOrCreate(constructor, m -> FastConstructor.create((Constructor<?>) m, memberLoader));
+    }
+
+    private FastField getOrCreateField(Field field) {
+        return (FastField) getOrCreate(field, m -> FastField.create((Field) m, memberLoader));
     }
 
     private FastMethod getOrCreateMethod(Method method) {
