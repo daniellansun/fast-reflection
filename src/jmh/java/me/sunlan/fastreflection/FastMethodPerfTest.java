@@ -87,6 +87,7 @@ public class FastMethodPerfTest {
         return stringInstanceFunctionStartswith.apply("abc", "a");
     }
 
+
     @Benchmark
     public Object constructor_direct_StringCtorCharArray() {
         return new String(CHAR_ARRAY);
@@ -158,6 +159,27 @@ public class FastMethodPerfTest {
         return INTEGER_FAST_FIELD_SIZE.get(null);
     }
 
+
+    @Benchmark
+    public Object _creator_FastClass() {
+        return FastClass.create(String.class, COMMON_MEMBER_LOADER);
+    }
+
+    @Benchmark
+    public Object _creator_FastMethod() {
+        return FastMethod.create(STRING_METHOD_STARTSWITH, COMMON_MEMBER_LOADER);
+    }
+
+    @Benchmark
+    public Object _creator_FastConstructor() {
+        return FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY, COMMON_MEMBER_LOADER);
+    }
+
+    @Benchmark
+    public Object _creator_FastField() {
+        return FastField.create(INTEGER_FIELD_SIZE, COMMON_MEMBER_LOADER);
+    }
+
     private static final Method STRING_METHOD_STARTSWITH;
     private static final Method STRING_METHOD_STARTSWITH_ACCESSIBLE;
     private static final MethodHandle STRING_METHOD_STARTSWITH_CONSTANT_HANDLE;
@@ -180,6 +202,8 @@ public class FastMethodPerfTest {
     private static final MethodHandle INTEGER_FIELD_SIZE_CONSTANT_HANDLE;
     private final MethodHandle integerFieldSizeInstanceHandle;
     private static final FastField INTEGER_FAST_FIELD_SIZE;
+
+    private static final FastMemberLoader COMMON_MEMBER_LOADER = new FastMemberLoader();
 
     static {
         try {
