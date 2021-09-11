@@ -21,7 +21,6 @@ package me.sunlan.fastreflection;
 import me.sunlan.fastreflection.generator.ClassData;
 import me.sunlan.fastreflection.generator.FastMethodGenerator;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -65,14 +64,7 @@ public abstract class FastMethod extends FastExecutable {
 
     public static FastMethod create(Method method, MemberLoadable memberLoader) {
         ClassData classData = FastMethodGenerator.INSTANCE.generate(method);
-        Class<?> fastMethodClass = memberLoader.load(classData.getName(), classData.getBytes());
-        try {
-            return (FastMethod) fastMethodClass.getConstructor(Method.class, MemberLoadable.class).newInstance(method, memberLoader);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastInstantiationException(e);
-        } catch (ExceptionInInitializerError e) {
-            throw (FastInstantiationException) e.getCause();
-        }
+        return memberLoader.load(classData);
     }
 
     @Override

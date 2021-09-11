@@ -18,8 +18,14 @@
  */
 package me.sunlan.fastreflection;
 
+import java.lang.reflect.Member;
+
 public interface FastMember {
     FastClass<?> getDeclaringClass();
     String getName();
     int getModifiers();
+
+    static FastMember create(Member member) {
+        return null;
+    }
 }

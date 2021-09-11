@@ -18,13 +18,17 @@
  */
 package me.sunlan.fastreflection.generator;
 
+import java.lang.reflect.Member;
+
 public final class ClassData {
     private final String name;
     private final byte[] bytes;
+    private final Member member;
 
-    ClassData(String name, byte[] bytes) {
+    ClassData(String name, byte[] bytes, Member member) {
         this.name = name;
         this.bytes = bytes;
+        this.member = member;
     }
 
     public String getName() {
@@ -33,5 +37,9 @@ public final class ClassData {
 
     public byte[] getBytes() {
         return bytes;
+    }
+
+    public Member getMember() {
+        return member;
     }
 }

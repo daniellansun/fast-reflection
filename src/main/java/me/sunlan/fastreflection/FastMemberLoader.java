@@ -18,6 +18,11 @@
  */
 package me.sunlan.fastreflection;
 
+import me.sunlan.fastreflection.generator.ClassData;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+
 public class FastMemberLoader extends ClassLoader implements MemberLoadable {
     public FastMemberLoader() {
         this(Thread.currentThread().getContextClassLoader());
@@ -28,7 +33,20 @@ public class FastMemberLoader extends ClassLoader implements MemberLoadable {
     }
 
     @Override
-    public synchronized Class<?> load(String className, byte[] bytes) {
+    public <T extends FastMember> T load(ClassData classData) {
+        Class<?> fastMemberClass = defineClass(classData.getName(), classData.getBytes());
+        Member member = classData.getMember();
+
+        try {
+            return (T) fastMemberClass.getConstructor(member.getClass(), MemberLoadable.class).newInstance(member, this);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new FastInstantiationException(e);
+        } catch (ExceptionInInitializerError e) {
+            throw (FastInstantiationException) e.getCause();
+        }
+    }
+
+    private synchronized Class<?> defineClass(String className, byte[] bytes) {
         Class<?> result = findLoadedClass(className);
         if (null != result) {
             return result;

@@ -58,7 +58,7 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
 
         classWriter.visitEnd();
 
-        return new ClassData(className, classWriter.toByteArray());
+        return new ClassData(className, classWriter.toByteArray(), member);
     }
 
     private void generateStaticBlock(Member member, ClassWriter classWriter, String internalClassName, Class<?>[] parameterTypes) {

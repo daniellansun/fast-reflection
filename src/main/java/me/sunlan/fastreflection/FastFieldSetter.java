@@ -22,7 +22,6 @@ import me.sunlan.fastreflection.generator.ClassData;
 import me.sunlan.fastreflection.generator.FastFieldSetterGenerator;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 public abstract class FastFieldSetter extends FastMethod {
     public FastFieldSetter(Field field, MemberLoadable memberLoader) {
@@ -35,14 +34,7 @@ public abstract class FastFieldSetter extends FastMethod {
     }
     public static FastFieldSetter create(Field field, MemberLoadable memberLoader) {
         ClassData classData = FastFieldSetterGenerator.INSTANCE.generate(field);
-        Class<?> fastMethodClass = memberLoader.load(classData.getName(), classData.getBytes());
-        try {
-            return (FastFieldSetter) fastMethodClass.getConstructor(Field.class, MemberLoadable.class).newInstance(field, memberLoader);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastInstantiationException(e);
-        } catch (ExceptionInInitializerError e) {
-            throw (FastInstantiationException) e.getCause();
-        }
+        return memberLoader.load(classData);
     }
 
     public void set(Object obj, Object value) throws Throwable {

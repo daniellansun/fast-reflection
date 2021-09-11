@@ -22,7 +22,6 @@ import me.sunlan.fastreflection.generator.ClassData;
 import me.sunlan.fastreflection.generator.FastConstructorGenerator;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public abstract class FastConstructor<T> extends FastExecutable {
@@ -48,14 +47,7 @@ public abstract class FastConstructor<T> extends FastExecutable {
 
     public static <T> FastConstructor<T> create(Constructor<T> constructor, MemberLoadable memberLoader) {
         ClassData classData = FastConstructorGenerator.INSTANCE.generate(constructor);
-        Class<?> fastConstructorClass = memberLoader.load(classData.getName(), classData.getBytes());
-        try {
-            return (FastConstructor<T>) fastConstructorClass.getConstructor(Constructor.class, MemberLoadable.class).newInstance(constructor, memberLoader);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastInstantiationException(e);
-        } catch (ExceptionInInitializerError e) {
-            throw (FastInstantiationException) e.getCause();
-        }
+        return memberLoader.load(classData);
     }
 
     @Override
