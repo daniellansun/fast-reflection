@@ -32,6 +32,7 @@ import static org.objectweb.asm.Opcodes.CHECKCAST;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Type.getInternalName;
 
 class AsmUtils {
     public static void cast(MethodVisitor mv, Class<?> parameterType) {
@@ -63,10 +64,6 @@ class AsmUtils {
         } else {
             mv.visitLdcInsn(Type.getObjectType(getInternalName(type)));
         }
-    }
-
-    public static String getInternalName(Class<?> type) {
-        return type.getName().replace('.', '/');
     }
 
     public static Class<?> getWrapper(Class<?> primitiveType) {

@@ -19,19 +19,16 @@
 package me.sunlan.fastreflection.generator;
 
 import me.sunlan.fastreflection.FastMember;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Member;
 
-import static org.objectweb.asm.Opcodes.ACC_FINAL;
-import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.ACC_VARARGS;
+import static org.objectweb.asm.Type.getInternalName;
 
 interface FastMemberGenerator {
+    String LOOKUP_INTERNAL_NAME = getInternalName(MethodHandles.Lookup.class);
+
     ClassData generate(Member member);
     String getInvokeMethodDescriptor();
     String getInvokeExactMethodDescriptor(Member member, Class<?>[] parameterTypes, Class<?> returnType);
@@ -45,14 +42,4 @@ interface FastMemberGenerator {
     String getMemberDescriptor();
     Class<? extends FastMember> getFastMemberClass();
     String generateClassName(Member member);
-
-    int CLASSWRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
-    int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;
-    int ACC_INNERCLASS = ACC_PUBLIC | ACC_FINAL | ACC_STATIC;
-    int ACC_FIELD = ACC_PRIVATE | ACC_FINAL | ACC_STATIC;
-    int ACC_METHOD = ACC_PUBLIC | ACC_VARARGS;
-    String METHODHANDLE_DESCRIPTOR = "Ljava/lang/invoke/MethodHandle;";
-    String METHODHANDLE_INTERNAL_NAME = "java/lang/invoke/MethodHandles";
-    String LOOKUP_INTERNAL_NAME = "java/lang/invoke/MethodHandles$Lookup";
-    String FASTINSTANTIATIONEXCEPTION_INTERNAL_NAME = "me/sunlan/fastreflection/FastInstantiationException";
 }

@@ -25,8 +25,10 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -147,5 +149,12 @@ public class FastMethodTest {
         Object result = fm.invoke(null, arg);
         assertEquals(Arrays.asList(1, 2, 3), result);
         assertTrue(fm.isVarArgs());
+    }
+
+    @Test
+    public void testDerivedMethod() throws Throwable {
+        FastMethod fm = FastMethod.create(Map.class.getMethod("size"));
+        int size = (int) fm.invoke(new HashMap());
+        assertEquals(0, size);
     }
 }
