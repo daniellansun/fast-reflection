@@ -41,13 +41,13 @@ public class FastMemberLoader extends ClassLoader implements MemberLoadable {
     }
 
     @Override
-    public <T extends FastMember> T load(MemberData classData) {
-        final String fastMemberClassName = classData.getName();
+    public <T extends FastMember> T load(MemberData memberData) {
+        final String fastMemberClassName = memberData.getName();
         FastMember result = loadedFastMemberCache.computeIfAbsent(fastMemberClassName, m -> {
-            Class<?> fastMemberClass = defineClass(fastMemberClassName, classData.getBytes());
+            Class<?> fastMemberClass = defineClass(fastMemberClassName, memberData.getBytes());
             try {
-                Member member = classData.getMember();
-                return (T) fastMemberClass.getConstructor(member.getClass(), MemberLoadable.class).newInstance(member, this);
+                Member member = memberData.getMember();
+                return (FastMember) fastMemberClass.getConstructor(member.getClass(), MemberLoadable.class).newInstance(member, this);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new FastInstantiationException(e);
             } catch (ExceptionInInitializerError e) {

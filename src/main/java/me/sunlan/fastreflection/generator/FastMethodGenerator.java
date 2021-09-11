@@ -99,8 +99,7 @@ public class FastMethodGenerator extends FastExecutableGenerator {
             parameterTypeStream = Stream.concat(Stream.of(member.getDeclaringClass()), parameterTypeStream);
         }
 
-        String invokeExactMethodDescriptor = getMethodDescriptor(returnType, parameterTypeStream.toArray(Class[]::new));
-        return invokeExactMethodDescriptor;
+        return getMethodDescriptor(returnType, parameterTypeStream.toArray(Class[]::new));
     }
 
     @Override
