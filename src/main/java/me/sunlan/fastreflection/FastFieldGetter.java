@@ -30,7 +30,7 @@ public abstract class FastFieldGetter extends FastMethod {
         this.field = field;
     }
 
-    public static FastMethod create(Field field) {
+    public static FastFieldGetter create(Field field) {
         return create(field, new FastMemberLoader());
     }
     public static FastFieldGetter create(Field field, MemberLoadable memberLoader) {
