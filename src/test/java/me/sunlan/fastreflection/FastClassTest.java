@@ -74,7 +74,7 @@ class FastClassTest {
                 .filter(fm -> {
                     try {
                         return fm.getName().equals("startsWith") && fm.getParameterTypes().length == 1;
-                    } catch (FastMemberInstantiationException e) {
+                    } catch (FastInstantiationException e) {
                         return false;
                     }
                 })
@@ -131,7 +131,7 @@ class FastClassTest {
                     try {
                         FastClass<?>[] parameterTypes = fctor.getParameterTypes();
                         return parameterTypes.length == 1 && parameterTypes[0].getRawClass() == char[].class;
-                    } catch (FastMemberInstantiationException e) {
+                    } catch (FastInstantiationException e) {
                         return false;
                     }
                 })

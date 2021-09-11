@@ -39,9 +39,9 @@ public abstract class FastFieldSetter extends FastMethod {
         try {
             return (FastFieldSetter) fastMethodClass.getConstructor(Field.class, MemberLoadable.class).newInstance(field, memberLoader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastMemberInstantiationException(e);
+            throw new FastInstantiationException(e);
         } catch (ExceptionInInitializerError e) {
-            throw (FastMemberInstantiationException) e.getCause();
+            throw (FastInstantiationException) e.getCause();
         }
     }
 

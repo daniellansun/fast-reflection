@@ -45,9 +45,6 @@ interface FastMemberGenerator {
     String getMemberDescriptor();
     Class<? extends FastMember> getFastMemberClass();
     String generateClassName(Member member);
-    default String getConstructorDescriptor() {
-        return "(" + getMemberDescriptor() + "Lme/sunlan/fastreflection/MemberLoadable;)V";
-    }
 
     int CLASSWRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
     int ACC_CLASS = ACC_PUBLIC | ACC_FINAL | ACC_SUPER;
@@ -57,5 +54,5 @@ interface FastMemberGenerator {
     String METHODHANDLE_DESCRIPTOR = "Ljava/lang/invoke/MethodHandle;";
     String METHODHANDLE_INTERNAL_NAME = "java/lang/invoke/MethodHandles";
     String LOOKUP_INTERNAL_NAME = "java/lang/invoke/MethodHandles$Lookup";
-    String FASTMEMBERINSTANTIATIONEXCEPTION_INTERNAL_NAME = "me/sunlan/fastreflection/FastMemberInstantiationException";
+    String FASTINSTANTIATIONEXCEPTION_INTERNAL_NAME = "me/sunlan/fastreflection/FastInstantiationException";
 }

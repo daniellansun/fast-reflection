@@ -69,9 +69,9 @@ public abstract class FastMethod extends FastExecutable {
         try {
             return (FastMethod) fastMethodClass.getConstructor(Method.class, MemberLoadable.class).newInstance(method, memberLoader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastMemberInstantiationException(e);
+            throw new FastInstantiationException(e);
         } catch (ExceptionInInitializerError e) {
-            throw (FastMemberInstantiationException) e.getCause();
+            throw (FastInstantiationException) e.getCause();
         }
     }
 

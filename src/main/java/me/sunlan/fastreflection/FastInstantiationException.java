@@ -18,12 +18,12 @@
  */
 package me.sunlan.fastreflection;
 
-public class FastMemberInstantiationException extends RuntimeException {
-    public FastMemberInstantiationException(Throwable cause) {
+public class FastInstantiationException extends RuntimeException {
+    public FastInstantiationException(Throwable cause) {
         super(cause);
     }
 
-    public FastMemberInstantiationException(String message, Throwable cause) {
+    public FastInstantiationException(String message, Throwable cause) {
         super(message, cause);
     }
 }

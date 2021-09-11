@@ -73,10 +73,10 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
         mv.visitJumpInsn(GOTO, label4);
         mv.visitLabel(label2);
         mv.visitVarInsn(ASTORE, 1);
-        mv.visitTypeInsn(NEW, FASTMEMBERINSTANTIATIONEXCEPTION_INTERNAL_NAME);
+        mv.visitTypeInsn(NEW, FASTINSTANTIATIONEXCEPTION_INTERNAL_NAME);
         mv.visitInsn(DUP);
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESPECIAL, FASTMEMBERINSTANTIATIONEXCEPTION_INTERNAL_NAME, "<init>", "(Ljava/lang/Throwable;)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, FASTINSTANTIATIONEXCEPTION_INTERNAL_NAME, "<init>", "(Ljava/lang/Throwable;)V", false);
         mv.visitInsn(ATHROW);
         mv.visitLabel(label4);
         mv.visitInsn(RETURN);
@@ -112,7 +112,7 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
     }
 
     private void generateConstructor(ClassWriter classWriter, String fastMemberInternalName) {
-        final String constructorDescriptor = getConstructorDescriptor();
+        final String constructorDescriptor = "(" + getMemberDescriptor() + "Lme/sunlan/fastreflection/MemberLoadable;)V";
         MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", constructorDescriptor, null, null);
         mv.visitCode();
         Label label0 = new Label();

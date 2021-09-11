@@ -132,7 +132,7 @@ public class FastMethodTest {
 
     @Test
     public void testInvisibleMethod() {
-        FastMemberInstantiationException exception = assertThrows(FastMemberInstantiationException.class, () -> {
+        FastInstantiationException exception = assertThrows(FastInstantiationException.class, () -> {
             FastMethod.create(AbstractList.class.getDeclaredMethod("removeRange", int.class, int.class));
         });
         Throwable cause = exception.getCause();

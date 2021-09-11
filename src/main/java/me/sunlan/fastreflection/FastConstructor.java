@@ -52,9 +52,9 @@ public abstract class FastConstructor<T> extends FastExecutable {
         try {
             return (FastConstructor<T>) fastConstructorClass.getConstructor(Constructor.class, MemberLoadable.class).newInstance(constructor, memberLoader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastMemberInstantiationException(e);
+            throw new FastInstantiationException(e);
         } catch (ExceptionInInitializerError e) {
-            throw (FastMemberInstantiationException) e.getCause();
+            throw (FastInstantiationException) e.getCause();
         }
     }
 

@@ -1,15 +1,15 @@
 # fast-reflection
-Yet another extremely fast alternative for Java reflection(WIP), making dynamic calls as efficient as direct calls.
+Yet another extremely fast alternative for Java reflection, making dynamic calls as efficient as direct calls.
 
 ## Usage
-See the tests for now:
+Use fast-reflection as enhanced Java reflection, see the tests for now:
 * [`FastMethod`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastMethodTest.java)
 * [`FastConstructor`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastConstructorTest.java)
 * [`FastField`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastFieldTest.java)
 * [`FastClass`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastClassTest.java)
 
-## Performance Test
-### Run `gradlew jmh` to get the performance test result
+## Benchmark Test
+### Run `gradlew jmh` to get the benchmark test report
 
 * JMH version: 1.33
 * VM version: JDK 11.0.9, OpenJDK 64-Bit Server VM, 11.0.9+11-LTS
@@ -21,6 +21,14 @@ See the tests for now:
 * Threads: 1 thread, will synchronize iterations
 * Benchmark mode: Average time, time/op
 
+### Summary
+* fast-reflection runs almost as fast as direct call
+* fast-reflection runs almost as fast as constant method handle
+* fast-reflection runs almost as fast as lambda meta factory
+* fast-reflection runs much faster than normal reflection
+* instance method handle runs almost as slow as normal reflection
+
+### Benchmark Test Report
 ```java
 Benchmark                                                                      Mode  Cnt   Score   Error  Units
 FastMethodPerfTest.constructor_constant_handle_StringCtorCharArray             avgt   15  12.140 ± 0.064  ns/op
@@ -47,19 +55,15 @@ FastMethodPerfTest.method_reflect_StringStartsWith                             a
 FastMethodPerfTest.method_reflect_accessible_StringStartsWith                  avgt   15   9.322 ± 0.341  ns/op
 ```
 
-### Summary
-* fast-reflection runs almost as fast as direct call
-* fast-reflection runs almost as fast as constant method handle
-* fast-reflection runs almost as fast as lambda meta factory
-* fast-reflection runs much faster than normal reflection
-* instance method handle runs almost as slow as normal reflection
-
 ## FAQ
-* **Q:** How fast can fast-reflection run?
-* **A:** fast-reflection runs almost as fast as direct calls, and much faster than normal reflection(see the above performance test result).
+### How fast can fast-reflection run?
+fast-reflection runs almost as fast as direct calls, and much faster than normal reflection(see the above benchmark test report).
 
-* **Q:** Method handles are available in JDK since Java 7, and they don't require any additional dependency. I'm not sure why custom libraries could be preferred over method handles.
-* **A:** Only constant method handles can gain the best performance, but reflection runs on the fly, so it's impossible for us to hard-code all constant method handles we may use. The fast-reflection will generate constants method handles for dynamic calls to gain the best performance, this is the reason why we need the custom library. BTW, instance method handles are much flexible but can not help us gain better performance because they run almost as slow as normal reflection.
+### Method handles are available since Java 7, why to use fast-reflection?
+Only constant method handles can gain the best performance, but reflection runs on the fly, so it's impossible for us to pre-define all constant method handles we may use. The fast-reflection will generate constants method handles for dynamic calls to gain the best performance, this is the reason why we need the custom library. BTW, instance method handles are much flexible but can not help us gain better performance because they run almost as slow as normal reflection.
 
-* **Q:** What dependencies does fast-reflection require?
-* **A:** Just the ASM.
+### How to use fast-reflection?
+fast-reflection provides similar API of Java reflection for dynamic invocation cases, so use fast-reflection as enhanced Java reflection.
+
+### What dependencies does fast-reflection require?
+Just the ASM.
