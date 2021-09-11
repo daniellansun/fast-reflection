@@ -41,6 +41,7 @@ import static org.objectweb.asm.Type.getInternalName;
 
 abstract class FastExecutableGenerator implements FastMemberGenerator {
 
+    @Override
     public ClassData generate(Member member) {
         ClassWriter classWriter = new ClassWriter(CLASSWRITER_FLAGS);
         final String className = generateClassName(member);

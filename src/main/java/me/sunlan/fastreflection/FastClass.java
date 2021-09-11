@@ -144,7 +144,7 @@ public class FastClass<T> {
     }
 
     private FastMember getOrCreate(Member m, Function<? super Member, ? extends FastMember> factory) {
-        return fastMethodMapCache.computeIfAbsent(m, factory);
+        return fastMemberCache.computeIfAbsent(m, factory);
     }
 
     private FastClass(Class<T> clazz, MemberLoadable memberLoader) {
@@ -172,5 +172,5 @@ public class FastClass<T> {
 
     private final Class<T> clazz;
     private final MemberLoadable memberLoader;
-    private final Map<Member, FastMember> fastMethodMapCache = new ConcurrentHashMap<>();
+    private final Map<Member, FastMember> fastMemberCache = new ConcurrentHashMap<>();
 }

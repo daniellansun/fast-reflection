@@ -22,6 +22,8 @@ import me.sunlan.fastreflection.generator.ClassData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FastMemberLoader extends ClassLoader implements MemberLoadable {
     public FastMemberLoader() {
@@ -34,23 +36,29 @@ public class FastMemberLoader extends ClassLoader implements MemberLoadable {
 
     @Override
     public <T extends FastMember> T load(ClassData classData) {
-        Class<?> fastMemberClass = defineClass(classData.getName(), classData.getBytes());
-        Member member = classData.getMember();
+        final String fastMemberClassName = classData.getName();
+        FastMember result = loadedFastMemberCache.computeIfAbsent(fastMemberClassName, m -> {
+            Class<?> fastMemberClass = defineClass(fastMemberClassName, classData.getBytes());
+            try {
+                Member member = classData.getMember();
+                return (T) fastMemberClass.getConstructor(member.getClass(), MemberLoadable.class).newInstance(member, this);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new FastInstantiationException(e);
+            } catch (ExceptionInInitializerError e) {
+                throw (FastInstantiationException) e.getCause();
+            }
+        });
 
-        try {
-            return (T) fastMemberClass.getConstructor(member.getClass(), MemberLoadable.class).newInstance(member, this);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new FastInstantiationException(e);
-        } catch (ExceptionInInitializerError e) {
-            throw (FastInstantiationException) e.getCause();
-        }
+        return (T) result;
     }
 
-    private synchronized Class<?> defineClass(String className, byte[] bytes) {
+    private Class<?> defineClass(String className, byte[] bytes) {
         Class<?> result = findLoadedClass(className);
         if (null != result) {
             return result;
         }
         return super.defineClass(className, bytes, 0, bytes.length);
     }
+
+    private final Map<String, FastMember> loadedFastMemberCache = new ConcurrentHashMap<>();
 }
