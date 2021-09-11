@@ -26,8 +26,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FastMemberLoader extends ClassLoader implements MemberLoadable {
+    private static final FastMemberLoader DEFAULT_LOADER = new FastMemberLoader();
+
+    public static FastMemberLoader getDefaultLoader() {
+        return DEFAULT_LOADER;
+    }
+
     public FastMemberLoader() {
-        this(Thread.currentThread().getContextClassLoader());
+        this(FastMemberLoader.class.getClassLoader());
     }
 
     public FastMemberLoader(ClassLoader parent) {

@@ -30,7 +30,7 @@ public abstract class FastFieldGetter extends FastMethod {
     }
 
     public static FastFieldGetter create(Field field) {
-        return create(field, new FastMemberLoader());
+        return create(field, FastMemberLoader.getDefaultLoader());
     }
     public static FastFieldGetter create(Field field, MemberLoadable memberLoader) {
         ClassData classData = FastFieldGetterGenerator.INSTANCE.generate(field);

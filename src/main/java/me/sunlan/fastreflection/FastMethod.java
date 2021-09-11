@@ -59,7 +59,7 @@ public abstract class FastMethod extends FastExecutable {
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
 
     public static FastMethod create(Method method) {
-        return create(method, new FastMemberLoader());
+        return create(method, FastMemberLoader.getDefaultLoader());
     }
 
     public static FastMethod create(Method method, MemberLoadable memberLoader) {

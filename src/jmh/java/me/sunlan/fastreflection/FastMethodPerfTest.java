@@ -203,7 +203,7 @@ public class FastMethodPerfTest {
     private final MethodHandle integerFieldSizeInstanceHandle;
     private static final FastField INTEGER_FAST_FIELD_SIZE;
 
-    private static final FastMemberLoader COMMON_MEMBER_LOADER = new FastMemberLoader();
+    private static final FastMemberLoader COMMON_MEMBER_LOADER = FastMemberLoader.getDefaultLoader();
 
     static {
         try {

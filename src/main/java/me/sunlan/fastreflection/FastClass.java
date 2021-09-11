@@ -30,7 +30,7 @@ import java.util.function.Function;
 
 public class FastClass<T> {
     public static <T> FastClass<T> create(Class<T> clazz) {
-        return create(clazz, new FastMemberLoader());
+        return create(clazz, FastMemberLoader.getDefaultLoader());
     }
 
     public static <T> FastClass<T>  create(Class<T> clazz, MemberLoadable memberLoader) {

@@ -42,7 +42,7 @@ public abstract class FastConstructor<T> extends FastExecutable {
     public abstract Object invoke(Object... args) throws Throwable;
 
     public static <T> FastConstructor<T> create(Constructor<T> constructor) {
-        return create(constructor, new FastMemberLoader());
+        return create(constructor, FastMemberLoader.getDefaultLoader());
     }
 
     public static <T> FastConstructor<T> create(Constructor<T> constructor, MemberLoadable memberLoader) {

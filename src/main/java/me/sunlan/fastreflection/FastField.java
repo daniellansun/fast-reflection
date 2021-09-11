@@ -22,7 +22,7 @@ public class FastField implements FastMember {
     }
 
     public static FastField create(Field field) {
-        return create(field, new FastMemberLoader());
+        return create(field, FastMemberLoader.getDefaultLoader());
     }
 
     public static FastField create(Field field, MemberLoadable memberLoader) {
