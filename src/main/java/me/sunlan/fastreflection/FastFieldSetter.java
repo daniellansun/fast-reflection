@@ -18,7 +18,6 @@
  */
 package me.sunlan.fastreflection;
 
-import me.sunlan.fastreflection.generator.ClassData;
 import me.sunlan.fastreflection.generator.FastFieldSetterGenerator;
 
 import java.lang.reflect.Field;
@@ -33,8 +32,7 @@ public abstract class FastFieldSetter extends FastMethod {
         return create(field, FastMemberLoader.getDefaultLoader());
     }
     public static FastFieldSetter create(Field field, MemberLoadable memberLoader) {
-        ClassData classData = FastFieldSetterGenerator.INSTANCE.generate(field);
-        return memberLoader.load(classData);
+        return memberLoader.load(FastFieldSetterGenerator.INSTANCE.generate(field));
     }
 
     public void set(Object obj, Object value) throws Throwable {

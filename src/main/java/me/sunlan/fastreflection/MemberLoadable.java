@@ -18,8 +18,8 @@
  */
 package me.sunlan.fastreflection;
 
-import me.sunlan.fastreflection.generator.ClassData;
+import me.sunlan.fastreflection.generator.MemberData;
 
 public interface MemberLoadable {
-    <T extends FastMember> T load(ClassData classData);
+    <T extends FastMember> T load(MemberData classData);
 }

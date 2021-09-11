@@ -18,7 +18,6 @@
  */
 package me.sunlan.fastreflection;
 
-import me.sunlan.fastreflection.generator.ClassData;
 import me.sunlan.fastreflection.generator.FastMethodGenerator;
 
 import java.lang.reflect.Method;
@@ -63,8 +62,7 @@ public abstract class FastMethod extends FastExecutable {
     }
 
     public static FastMethod create(Method method, MemberLoadable memberLoader) {
-        ClassData classData = FastMethodGenerator.INSTANCE.generate(method);
-        return memberLoader.load(classData);
+        return memberLoader.load(FastMethodGenerator.INSTANCE.generate(method));
     }
 
     @Override

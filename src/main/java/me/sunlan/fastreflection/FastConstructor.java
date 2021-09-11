@@ -18,7 +18,6 @@
  */
 package me.sunlan.fastreflection;
 
-import me.sunlan.fastreflection.generator.ClassData;
 import me.sunlan.fastreflection.generator.FastConstructorGenerator;
 
 import java.lang.reflect.Constructor;
@@ -46,8 +45,7 @@ public abstract class FastConstructor<T> extends FastExecutable {
     }
 
     public static <T> FastConstructor<T> create(Constructor<T> constructor, MemberLoadable memberLoader) {
-        ClassData classData = FastConstructorGenerator.INSTANCE.generate(constructor);
-        return memberLoader.load(classData);
+        return memberLoader.load(FastConstructorGenerator.INSTANCE.generate(constructor));
     }
 
     @Override

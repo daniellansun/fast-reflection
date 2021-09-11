@@ -18,7 +18,7 @@
  */
 package me.sunlan.fastreflection;
 
-import me.sunlan.fastreflection.generator.ClassData;
+import me.sunlan.fastreflection.generator.MemberData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -41,7 +41,7 @@ public class FastMemberLoader extends ClassLoader implements MemberLoadable {
     }
 
     @Override
-    public <T extends FastMember> T load(ClassData classData) {
+    public <T extends FastMember> T load(MemberData classData) {
         final String fastMemberClassName = classData.getName();
         FastMember result = loadedFastMemberCache.computeIfAbsent(fastMemberClassName, m -> {
             Class<?> fastMemberClass = defineClass(fastMemberClassName, classData.getBytes());

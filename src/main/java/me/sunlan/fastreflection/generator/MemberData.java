@@ -20,12 +20,12 @@ package me.sunlan.fastreflection.generator;
 
 import java.lang.reflect.Member;
 
-public class ClassData {
+public class MemberData {
     private final String name;
     private final byte[] bytes;
     private final Member member;
 
-    public ClassData(String name, byte[] bytes, Member member) {
+    public MemberData(String name, byte[] bytes, Member member) {
         this.name = name;
         this.bytes = bytes;
         this.member = member;
