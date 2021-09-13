@@ -2,11 +2,13 @@
 Yet another extremely fast alternative for Java reflection, making dynamic calls as efficient as direct calls.
 
 ## Usage
-Use fast-reflection as enhanced Java reflection, see the tests for now:
+Use fast-reflection as enhanced Java reflection, see the tests for now.
 * [`FastMethod`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastMethodTest.java)
 * [`FastConstructor`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastConstructorTest.java)
 * [`FastField`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastFieldTest.java)
 * [`FastClass`](https://github.com/danielsun1106/fast-reflection/blob/main/src/test/java/me/sunlan/fastreflection/FastClassTest.java)
+
+**Note:** `FastXXX` instances are immutable, so it's strongly recommended to reuse them as possible as we could for better performance.
 
 ## Benchmark Test
 ### Run `gradlew jmh` to get the benchmark test report
