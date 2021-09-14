@@ -31,7 +31,7 @@ public abstract class FastConstructor<T> extends FastExecutable {
         this.declaringClass = null;
     }
 
-    public FastConstructor(Constructor<T> constructor, MemberLoadable memberLoader) {
+    protected FastConstructor(Constructor<T> constructor, MemberLoadable memberLoader) {
         super(constructor, memberLoader);
         this.constructor = constructor;
         this.memberLoader = memberLoader;

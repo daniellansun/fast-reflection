@@ -23,7 +23,7 @@ import me.sunlan.fastreflection.generator.FastFieldSetterGenerator;
 import java.lang.reflect.Field;
 
 public abstract class FastFieldSetter extends FastMethod {
-    public FastFieldSetter(Field field, MemberLoadable memberLoader) {
+    protected FastFieldSetter(Field field, MemberLoadable memberLoader) {
         super(null, memberLoader);
         this.field = field;
     }

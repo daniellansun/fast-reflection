@@ -30,7 +30,7 @@ public abstract class FastMethod extends FastExecutable {
         this.memberLoader = null;
     }
 
-    public FastMethod(Method method, MemberLoadable memberLoader) {
+    protected FastMethod(Method method, MemberLoadable memberLoader) {
         super(method, memberLoader);
         this.method = method;
         this.memberLoader = memberLoader;
