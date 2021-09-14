@@ -23,9 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class FastClass<T> {
@@ -51,12 +49,12 @@ public class FastClass<T> {
 
     public FastMethod getMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method method = clazz.getMethod(name, parameterTypes);
-        return getOrCreateMethod(method);
+        return createMethod(method);
     }
 
     public FastMethod getDeclaredMethod(String name, Class<?> parameterTypes) throws NoSuchMethodException {
         Method method = clazz.getDeclaredMethod(name, parameterTypes);
-        return getOrCreateMethod(method);
+        return createMethod(method);
     }
 
     public FastMethod[] getMethods() {
@@ -71,12 +69,12 @@ public class FastClass<T> {
 
     public FastConstructor<T> getConstructor(Class<?>... parameterTypes) throws NoSuchMethodException {
         Constructor<T> constructor = clazz.getConstructor(parameterTypes);
-        return getOrCreateConstructor(constructor);
+        return createConstructor(constructor);
     }
 
     public FastConstructor<T> getDeclaredConstructor(Class<?>... parameterTypes) throws NoSuchMethodException {
         Constructor<T> constructor = clazz.getDeclaredConstructor(parameterTypes);
-        return getOrCreateConstructor(constructor);
+        return createConstructor(constructor);
     }
 
     public FastConstructor<?>[] getConstructors() {
@@ -91,12 +89,12 @@ public class FastClass<T> {
 
     public FastField getField(String name) throws NoSuchFieldException {
         Field field = clazz.getField(name);
-        return getOrCreateField(field);
+        return createField(field);
     }
 
     public FastField getDeclaredField(String name) throws NoSuchFieldException {
         Field field = clazz.getDeclaredField(name);
-        return getOrCreateField(field);
+        return createField(field);
     }
 
     public FastField[] getFields() {
@@ -115,36 +113,36 @@ public class FastClass<T> {
 
     private synchronized FastMethod[] doGetMethods(Method[] methods) {
         return Arrays.stream(methods)
-                .map(method -> new LazyFastMethod(() -> getOrCreateMethod(method)))
+                .map(method -> new LazyFastMethod(() -> createMethod(method)))
                 .toArray(FastMethod[]::new);
     }
 
     private FastConstructor<T>[] doGetConstructors(Constructor<T>[] constructors) {
         return Arrays.stream(constructors)
-                .map(constructor -> new LazyFastConstructor<>(() -> getOrCreateConstructor(constructor)))
+                .map(constructor -> new LazyFastConstructor<>(() -> createConstructor(constructor)))
                 .toArray(FastConstructor[]::new);
     }
 
     private FastField[] doGetFields(Field[] fields) {
         return Arrays.stream(fields)
-                .map(field -> new LazyFastField(() -> getOrCreateField(field)))
+                .map(field -> new LazyFastField(() -> createField(field)))
                 .toArray(FastField[]::new);
     }
 
-    private FastConstructor<T> getOrCreateConstructor(Constructor<T> constructor) {
-        return (FastConstructor<T>) getOrCreate(constructor, m -> FastConstructor.create((Constructor<?>) m, memberLoader));
+    private FastConstructor<T> createConstructor(Constructor<T> constructor) {
+        return (FastConstructor<T>) create(constructor, m -> FastConstructor.create((Constructor<?>) m, memberLoader));
     }
 
-    private FastField getOrCreateField(Field field) {
-        return (FastField) getOrCreate(field, m -> FastField.create((Field) m, memberLoader));
+    private FastField createField(Field field) {
+        return (FastField) create(field, m -> FastField.create((Field) m, memberLoader));
     }
 
-    private FastMethod getOrCreateMethod(Method method) {
-        return (FastMethod) getOrCreate(method, m -> FastMethod.create((Method) m, memberLoader));
+    private FastMethod createMethod(Method method) {
+        return (FastMethod) create(method, m -> FastMethod.create((Method) m, memberLoader));
     }
 
-    private FastMember getOrCreate(Member m, Function<? super Member, ? extends FastMember> factory) {
-        return fastMemberCache.computeIfAbsent(m, factory);
+    private FastMember create(Member m, Function<? super Member, ? extends FastMember> factory) {
+        return factory.apply(m);
     }
 
     private FastClass(Class<T> clazz, MemberLoadable memberLoader) {
@@ -172,5 +170,4 @@ public class FastClass<T> {
 
     private final Class<T> clazz;
     private final MemberLoadable memberLoader;
-    private final Map<Member, FastMember> fastMemberCache = new ConcurrentHashMap<>();
 }
