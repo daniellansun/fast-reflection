@@ -30,7 +30,6 @@ import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
 public class FastFieldSetterGenerator extends FastMethodGenerator {
     public static final FastFieldSetterGenerator INSTANCE = new FastFieldSetterGenerator();
-    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 
     @Override
     public Class<FastFieldSetter> getFastMemberClass() {
