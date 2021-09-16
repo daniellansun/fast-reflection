@@ -78,9 +78,8 @@ public class FastFieldTest {
 
     @Test
     public void testEqualsAndHashCode() throws NoSuchFieldException {
-        FastMemberLoader fastMemberLoader = new FastMemberLoader();
-        FastField ff1 = FastField.create(Person.class.getField("name"), fastMemberLoader);
-        FastField ff2 = FastField.create(Person.class.getField("name"), fastMemberLoader);
+        FastField ff1 = FastField.create(Person.class.getField("name"));
+        FastField ff2 = FastField.create(Person.class.getField("name"));
         Set<FastField> fastFieldSet = new HashSet<>();
         fastFieldSet.add(ff1);
         fastFieldSet.add(ff2);

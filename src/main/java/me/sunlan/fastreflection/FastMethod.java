@@ -58,11 +58,15 @@ public abstract class FastMethod extends FastExecutable {
     public abstract Object invoke(Object obj, Object... args) throws Throwable;
 
     public static FastMethod create(Method method) {
-        return create(method, FastMemberLoader.getDefaultLoader());
+        return create(method, false);
     }
 
-    public static FastMethod create(Method method, MemberLoadable memberLoader) {
-        return memberLoader.load(FastMethodGenerator.INSTANCE.generate(method));
+    public static FastMethod create(Method method, boolean toSetAccessible) {
+        return create(method, FastMemberLoader.getDefaultLoader(), toSetAccessible);
+    }
+
+    public static FastMethod create(Method method, MemberLoadable memberLoader, boolean toSetAccessible) {
+        return memberLoader.load(FastMethodGenerator.INSTANCE.generate(method, toSetAccessible));
     }
 
     @Override

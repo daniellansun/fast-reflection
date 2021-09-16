@@ -21,6 +21,7 @@ package me.sunlan.fastreflection;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,9 +95,8 @@ public class FastMethodTest {
     @Test
     public void testEqualsAndHashCode() throws NoSuchMethodException {
         Set<FastMethod> fastMethodSet = new HashSet<>();
-        FastMemberLoader fastMemberLoader = new FastMemberLoader();
-        FastMethod fm1 = FastMethod.create(String.class.getMethod("startsWith", String.class), fastMemberLoader);
-        FastMethod fm2 = FastMethod.create(String.class.getMethod("startsWith", String.class), fastMemberLoader);
+        FastMethod fm1 = FastMethod.create(String.class.getMethod("startsWith", String.class));
+        FastMethod fm2 = FastMethod.create(String.class.getMethod("startsWith", String.class));
         fastMethodSet.add(fm1);
         fastMethodSet.add(fm2);
         assertEquals(1, fastMethodSet.size());
@@ -140,6 +140,12 @@ public class FastMethodTest {
         Throwable cause = exception.getCause();
         assertTrue(cause instanceof IllegalAccessException);
         assertTrue(cause.getMessage().startsWith("member is protected: java.util.AbstractList.removeRange"));
+    }
+
+    @Test
+    public void testSetInvisibleMethodAccessible() throws Throwable {
+        FastMethod fm = FastMethod.create(AbstractList.class.getDeclaredMethod("removeRange", int.class, int.class),true);
+        assertTrue(Modifier.isProtected(fm.getModifiers()));
     }
 
     @Test

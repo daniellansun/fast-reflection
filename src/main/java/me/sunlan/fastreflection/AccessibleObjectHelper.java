@@ -18,8 +18,18 @@
  */
 package me.sunlan.fastreflection;
 
-public interface FastMember {
-    FastClass<?> getDeclaringClass();
-    String getName();
-    int getModifiers();
+import java.lang.reflect.AccessibleObject;
+
+public class AccessibleObjectHelper {
+    public static boolean trySetAccessible(AccessibleObject obj) {
+        try {
+            obj.setAccessible(true);
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    private AccessibleObjectHelper() {
+    }
 }

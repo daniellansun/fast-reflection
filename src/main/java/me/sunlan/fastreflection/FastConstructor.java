@@ -41,11 +41,15 @@ public abstract class FastConstructor<T> extends FastExecutable {
     public abstract Object invoke(Object... args) throws Throwable;
 
     public static <T> FastConstructor<T> create(Constructor<T> constructor) {
-        return create(constructor, FastMemberLoader.getDefaultLoader());
+        return create(constructor, false);
     }
 
-    public static <T> FastConstructor<T> create(Constructor<T> constructor, MemberLoadable memberLoader) {
-        return memberLoader.load(FastConstructorGenerator.INSTANCE.generate(constructor));
+    public static <T> FastConstructor<T> create(Constructor<T> constructor, boolean toSetAccessible) {
+        return create(constructor, FastMemberLoader.getDefaultLoader(), toSetAccessible);
+    }
+
+    public static <T> FastConstructor<T> create(Constructor<T> constructor, MemberLoadable memberLoader, boolean toSetAccessible) {
+        return memberLoader.load(FastConstructorGenerator.INSTANCE.generate(constructor, toSetAccessible));
     }
 
     @Override

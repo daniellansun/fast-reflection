@@ -145,9 +145,8 @@ class FastClassTest {
     @Test
     public void testEqualsAndHashCode() {
         Set<FastClass<String>> fastClassSet = new HashSet<>();
-        FastMemberLoader fastMemberLoader = new FastMemberLoader();
-        FastClass<String> fc1 = FastClass.create(String.class, fastMemberLoader);
-        FastClass<String> fc2 = FastClass.create(String.class, fastMemberLoader);
+        FastClass<String> fc1 = FastClass.create(String.class);
+        FastClass<String> fc2 = FastClass.create(String.class);
         fastClassSet.add(fc1);
         fastClassSet.add(fc2);
         assertEquals(1, fastClassSet.size());

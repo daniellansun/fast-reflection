@@ -1,5 +1,6 @@
 package me.sunlan.fastreflection.generator;
 
+import me.sunlan.fastreflection.AccessibleObjectHelper;
 import me.sunlan.fastreflection.FastInstantiationException;
 import me.sunlan.fastreflection.MemberLoadable;
 import org.objectweb.asm.ClassWriter;
@@ -33,6 +34,7 @@ import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.NEW;
+import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_8;
@@ -40,11 +42,10 @@ import static org.objectweb.asm.Type.getDescriptor;
 import static org.objectweb.asm.Type.getInternalName;
 
 abstract class FastExecutableGenerator implements FastMemberGenerator {
-
     @Override
-    public MemberData generate(Member member) {
+    public MemberData generate(Member member, boolean toSetAccessible) {
         ClassWriter classWriter = new ClassWriter(CLASSWRITER_FLAGS);
-        final String className = generateClassName(member);
+        final String className = generateClassName(member) + "_" + (toSetAccessible ? "1" : "0");
         final String internalClassName = className.replace('.', '/');
         final String fastMemberInternalName = getInternalName(getFastMemberClass());
         classWriter.visit(V1_8, ACC_CLASS, internalClassName, null, fastMemberInternalName, null);
@@ -55,14 +56,14 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
 
         final Class<?>[] parameterTypes = getParameterTypes(member);
         generateInvokeMethod(member, classWriter, internalClassName, parameterTypes);
-        generateStaticBlock(member, classWriter, internalClassName, parameterTypes);
+        generateStaticBlock(member, classWriter, internalClassName, parameterTypes, toSetAccessible);
 
         classWriter.visitEnd();
 
         return new MemberData(member, className, classWriter.toByteArray());
     }
 
-    private void generateStaticBlock(Member member, ClassWriter classWriter, String internalClassName, Class<?>[] parameterTypes) {
+    private void generateStaticBlock(Member member, ClassWriter classWriter, String internalClassName, Class<?>[] parameterTypes, boolean toSetAccessible) {
         MethodVisitor mv = classWriter.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
         mv.visitCode();
         Label label0 = new Label();
@@ -75,6 +76,13 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
         visitTypeArray(parameterTypes, mv);
         visitGetMember(mv, member);
         mv.visitVarInsn(ASTORE, 0);
+
+        if (toSetAccessible) {
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESTATIC, ACCESSIBLEOBJECTHELPER_INTERNAL_NAME, "trySetAccessible", "(Ljava/lang/reflect/AccessibleObject;)Z", false);
+            mv.visitInsn(POP);
+        }
+
         mv.visitMethodInsn(INVOKESTATIC, METHODHANDLES_INTERNAL_NAME, "lookup", "()" + LOOKUP_DESCRIPTOR, false);
         mv.visitVarInsn(ALOAD, 0);
         visitFindMethod(mv, member);
@@ -161,6 +169,7 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
     private static final int ACC_FIELD = ACC_PRIVATE | ACC_FINAL | ACC_STATIC;
     private static final int ACC_METHOD = ACC_PUBLIC | ACC_VARARGS;
     private static final String INIT = "<init>";
+    private static final String ACCESSIBLEOBJECTHELPER_INTERNAL_NAME = getInternalName(AccessibleObjectHelper.class);
     protected static final String METHODHANDLE_DESCRIPTOR = getDescriptor(MethodHandle.class);
     protected static final String METHODHANDLE_INTERNAL_NAME = getInternalName(MethodHandle.class);
     protected static final String METHODHANDLES_INTERNAL_NAME = getInternalName(MethodHandles.class);

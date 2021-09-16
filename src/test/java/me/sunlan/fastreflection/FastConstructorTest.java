@@ -58,9 +58,8 @@ class FastConstructorTest {
     @Test
     public void testEqualsAndHashCode() throws NoSuchMethodException {
         Set<FastConstructor<String>> fastConstructorSet = new HashSet<>();
-        FastMemberLoader fastMemberLoader = new FastMemberLoader();
-        FastConstructor<String> fc1 = FastConstructor.create(String.class.getConstructor(char[].class), fastMemberLoader);
-        FastConstructor<String> fc2 = FastConstructor.create(String.class.getConstructor(char[].class), fastMemberLoader);
+        FastConstructor<String> fc1 = FastConstructor.create(String.class.getConstructor(char[].class));
+        FastConstructor<String> fc2 = FastConstructor.create(String.class.getConstructor(char[].class));
         fastConstructorSet.add(fc1);
         fastConstructorSet.add(fc2);
         assertEquals(1, fastConstructorSet.size());

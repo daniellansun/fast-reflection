@@ -162,22 +162,22 @@ public class FastMethodPerfTest {
 
     @Benchmark
     public Object _creator_FastClass() {
-        return FastClass.create(String.class, COMMON_MEMBER_LOADER);
+        return FastClass.create(String.class);
     }
 
     @Benchmark
     public Object _creator_FastMethod() {
-        return FastMethod.create(STRING_METHOD_STARTSWITH, COMMON_MEMBER_LOADER);
+        return FastMethod.create(STRING_METHOD_STARTSWITH);
     }
 
     @Benchmark
     public Object _creator_FastConstructor() {
-        return FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY, COMMON_MEMBER_LOADER);
+        return FastConstructor.create(STRING_CONSTRUCTOR_CHAR_ARRAY);
     }
 
     @Benchmark
     public Object _creator_FastField() {
-        return FastField.create(INTEGER_FIELD_SIZE, COMMON_MEMBER_LOADER);
+        return FastField.create(INTEGER_FIELD_SIZE);
     }
 
     private static final Method STRING_METHOD_STARTSWITH;
@@ -202,8 +202,6 @@ public class FastMethodPerfTest {
     private static final MethodHandle INTEGER_FIELD_SIZE_CONSTANT_HANDLE;
     private final MethodHandle integerFieldSizeInstanceHandle;
     private static final FastField INTEGER_FAST_FIELD_SIZE;
-
-    private static final FastMemberLoader COMMON_MEMBER_LOADER = FastMemberLoader.getDefaultLoader();
 
     static {
         try {

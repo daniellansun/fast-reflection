@@ -29,7 +29,7 @@ import static org.objectweb.asm.Type.getInternalName;
 interface FastMemberGenerator {
     String LOOKUP_INTERNAL_NAME = getInternalName(MethodHandles.Lookup.class);
 
-    MemberData generate(Member member);
+    MemberData generate(Member member, boolean toSetAccessible);
     String getInvokeMethodDescriptor();
     String getInvokeExactMethodDescriptor(Member member, Class<?>[] parameterTypes, Class<?> returnType);
     int getArgsIndex();

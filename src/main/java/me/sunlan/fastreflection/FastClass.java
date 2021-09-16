@@ -130,15 +130,15 @@ public class FastClass<T> {
     }
 
     private FastConstructor<T> createConstructor(Constructor<T> constructor) {
-        return (FastConstructor<T>) create(constructor, m -> FastConstructor.create((Constructor<?>) m, memberLoader));
+        return (FastConstructor<T>) create(constructor, m -> FastConstructor.create((Constructor<?>) m, memberLoader, false));
     }
 
     private FastField createField(Field field) {
-        return (FastField) create(field, m -> FastField.create((Field) m, memberLoader));
+        return (FastField) create(field, m -> FastField.create((Field) m, memberLoader, false));
     }
 
     private FastMethod createMethod(Method method) {
-        return (FastMethod) create(method, m -> FastMethod.create((Method) m, memberLoader));
+        return (FastMethod) create(method, m -> FastMethod.create((Method) m, memberLoader, false));
     }
 
     private FastMember create(Member m, Function<? super Member, ? extends FastMember> factory) {

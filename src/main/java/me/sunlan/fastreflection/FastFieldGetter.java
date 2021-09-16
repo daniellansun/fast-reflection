@@ -29,10 +29,15 @@ public abstract class FastFieldGetter extends FastMethod {
     }
 
     public static FastFieldGetter create(Field field) {
-        return create(field, FastMemberLoader.getDefaultLoader());
+        return create(field, false);
     }
-    public static FastFieldGetter create(Field field, MemberLoadable memberLoader) {
-        return memberLoader.load(FastFieldGetterGenerator.INSTANCE.generate(field));
+
+    public static FastFieldGetter create(Field field, boolean toSetAccessible) {
+        return create(field, FastMemberLoader.getDefaultLoader(), toSetAccessible);
+    }
+
+    public static FastFieldGetter create(Field field, MemberLoadable memberLoader, boolean toSetAccessible) {
+        return memberLoader.load(FastFieldGetterGenerator.INSTANCE.generate(field, toSetAccessible));
     }
 
     public Object get(Object obj) throws Throwable {

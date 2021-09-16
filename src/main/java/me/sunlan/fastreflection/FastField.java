@@ -22,13 +22,17 @@ public class FastField implements FastMember {
     }
 
     public static FastField create(Field field) {
-        return create(field, FastMemberLoader.getDefaultLoader());
+        return create(field, false);
     }
 
-    public static FastField create(Field field, MemberLoadable memberLoader) {
-        FastFieldGetter fastFieldGetter = FastFieldGetter.create(field, memberLoader);
+    public static FastField create(Field field, boolean toSetAccessible) {
+        return create(field, FastMemberLoader.getDefaultLoader(), toSetAccessible);
+    }
+
+    public static FastField create(Field field, MemberLoadable memberLoader, boolean toSetAccessible) {
+        FastFieldGetter fastFieldGetter = FastFieldGetter.create(field, memberLoader, toSetAccessible);
         FastFieldSetter fastFieldSetter = Modifier.isFinal(field.getModifiers())
-                                            ? null : FastFieldSetter.create(field, memberLoader);
+                ? null : FastFieldSetter.create(field, memberLoader, toSetAccessible);
         return new FastField(field, memberLoader, fastFieldGetter, fastFieldSetter);
     }
 
