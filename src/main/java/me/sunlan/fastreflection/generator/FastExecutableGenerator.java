@@ -49,7 +49,6 @@ abstract class FastExecutableGenerator implements FastMemberGenerator {
         final String internalClassName = className.replace('.', '/');
         final String fastMemberInternalName = getInternalName(getFastMemberClass());
         classWriter.visit(V1_8, ACC_CLASS, internalClassName, null, fastMemberInternalName, null);
-        classWriter.visitInnerClass(LOOKUP_INTERNAL_NAME, METHODHANDLES_INTERNAL_NAME, "Lookup", ACC_INNERCLASS);
 
         generateConstantMethodHandleField(classWriter);
         generateConstructor(classWriter, fastMemberInternalName);
