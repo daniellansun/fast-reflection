@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 final class LazyFastConstructor<T> extends FastConstructor<T> {
     private final Supplier<FastConstructor<T>> supplier;
-    private FastConstructor<T> delegate;
+    private volatile FastConstructor<T> delegate;
 
     public LazyFastConstructor(Supplier<FastConstructor<T>> supplier) {
         this.supplier = supplier;
