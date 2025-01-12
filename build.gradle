@@ -99,8 +99,8 @@ publishing {
             def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username project.property('mavenUsername')
-                password project.property('mavenPassword')
+                username = project.hasProperty('mavenUsername') ? project.property('mavenUsername') : System.getenv('MAVEN_USERNAME')
+                password = project.hasProperty('mavenPassword') ? project.property('mavenPassword') : System.getenv('MAVEN_PASSWORD')
             }
         }
     }
