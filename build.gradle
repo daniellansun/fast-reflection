@@ -19,7 +19,7 @@
 
 plugins {
     id 'java-library'
-    id "me.champeau.gradle.jmh" version "0.5.3"
+    id "me.champeau.jmh" version "0.7.2"
 }
 
 repositories {
@@ -55,7 +55,7 @@ jmh {
     jvmArgs = ['-Xms2g', '-Xmx2g', '-XX:MetaspaceSize=512m', '-XX:MaxMetaspaceSize=512m', '-XX:+UseG1GC']
     jmhVersion = '1.33'
     includeTests = true
-    duplicateClassesStrategy = 'WARN'
+    duplicateClassesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.withType(Wrapper).configureEach {
