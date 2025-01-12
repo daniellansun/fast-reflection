@@ -57,6 +57,8 @@ jmh {
     jmhVersion = '1.37'
     includeTests = true
     duplicateClassesStrategy = DuplicatesStrategy.WARN
+    humanOutputFile = project.file("${project.buildDir}/reports/jmh/human.txt") // human-readable output file
+    resultsFile = project.file("${project.buildDir}/reports/jmh/results.txt") // results file
 }
 
 java {
