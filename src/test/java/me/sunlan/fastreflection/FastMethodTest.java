@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class FastMethodTest {
     @Test
@@ -144,6 +145,7 @@ public class FastMethodTest {
 
     @Test
     public void testSetInvisibleMethodAccessible() throws Throwable {
+        assumeTrue(javaVersion() < 16);
         FastMethod fm = FastMethod.create(AbstractList.class.getDeclaredMethod("removeRange", int.class, int.class),true);
         assertTrue(Modifier.isProtected(fm.getModifiers()));
     }
@@ -162,5 +164,11 @@ public class FastMethodTest {
         FastMethod fm = FastMethod.create(Map.class.getMethod("size"));
         int size = (int) fm.invoke(new HashMap());
         assertEquals(0, size);
+    }
+
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        String[] parts = version.split("\\.");
+        return Integer.parseInt(parts[0]);
     }
 }
