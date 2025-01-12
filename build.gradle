@@ -53,7 +53,7 @@ tasks.named('test') {
 
 jmh {
     jvmArgs = ['-Xms2g', '-Xmx2g', '-XX:MetaspaceSize=512m', '-XX:MaxMetaspaceSize=512m', '-XX:+UseG1GC']
-    jmhVersion = '1.33'
+    jmhVersion = '1.37'
     includeTests = true
     duplicateClassesStrategy = DuplicatesStrategy.WARN
 }
