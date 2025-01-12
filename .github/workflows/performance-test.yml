@@ -45,5 +45,5 @@ jobs:
       - name: Upload performance result report
         uses: actions/upload-artifact@v4
         with:
-          name: performance result report
+          name: performance-test-report-${{ matrix.os }}-${{ matrix.java }}
           path: build/reports/jmh/
