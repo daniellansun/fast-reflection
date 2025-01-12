@@ -43,7 +43,7 @@ jobs:
         env:
           GRADLE_SCANS_ACCEPT: yes
       - name: Upload performance result report
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: performance result report
           path: build/reports/jmh/
