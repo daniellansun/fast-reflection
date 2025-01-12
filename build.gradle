@@ -22,6 +22,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id "me.champeau.jmh" version "0.7.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 repositories {
@@ -36,7 +37,7 @@ dependencies {
 }
 
 group = 'me.sunlan'
-version = '1.0.1'
+version = '1.0.2'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -74,11 +75,23 @@ jar {
     }
 }
 
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    enableRelocation = true
+    relocationPrefix = "me.sunlan.fastreflection.shaded"
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'fast-reflection'
-            from components.java
+            artifact shadowJar.archiveFile
+            artifact javadocJar
+            artifact sourcesJar
+            signing {
+                sign shadowJar
+                sign javadocJar
+                sign sourcesJar
+            }
             pom {
                 name = 'Fast Reflection'
                 description = 'Yet another extremely fast alternative for Java reflection'
