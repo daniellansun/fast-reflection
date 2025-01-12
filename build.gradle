@@ -19,11 +19,12 @@
 
 plugins {
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
     id "me.champeau.jmh" version "0.7.2"
 }
 
 repositories {
-//    maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
     mavenCentral()
 }
 
@@ -34,8 +35,8 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${version_junit}"
 }
 
-group 'me.sunlan'
-version '1.0-SNAPSHOT'
+group = 'me.sunlan'
+version = '1.0.0'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -56,6 +57,66 @@ jmh {
     jmhVersion = '1.37'
     includeTests = true
     duplicateClassesStrategy = DuplicatesStrategy.WARN
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'fast-reflection'
+            from components.java
+            pom {
+                name = 'Fast Reflection'
+                description = 'Yet another extremely fast alternative for Java reflection'
+                url = 'https://github.com/daniellansun/fast-reflection'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'sunlan'
+                        name = 'Daniel Sun'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/daniellansun/fast-reflection.git'
+                    developerConnection = 'scm:git:ssh://github.com/daniellansun/fast-reflection.git'
+                    url = 'https://github.com/daniellansun/fast-reflection'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username project.property('mavenUsername')
+                password project.property('mavenPassword')
+            }
+        }
+    }
+}
+
+signing {
+    if (project.hasProperty("signing.keyId") && project.hasProperty("signing.password")) {
+        useGpgCmd()
+    }
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
 }
 
 tasks.withType(Wrapper).configureEach {
