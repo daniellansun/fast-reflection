@@ -37,7 +37,8 @@ dependencies {
 }
 
 group = 'me.sunlan'
-version = '1.0.2'
+version = '1.0.3'
+description = 'Yet another extremely fast alternative for Java reflection'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -70,14 +71,16 @@ java {
 jar {
     manifest {
         attributes(
-            'Automatic-Module-Name': 'me.sunlan.fastreflection'
+            'Automatic-Module-Name': 'me.sunlan.fastreflection',
+            'Implementation-Title': "${description}",
+            'Implementation-Version': "${version}"
         )
     }
 }
 
 tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     enableRelocation = true
-    relocationPrefix = "me.sunlan.fastreflection.shaded"
+    relocate 'org.objectweb.asm', 'me.sunlan.fastreflection.shaded.org.objectweb.asm'
 }
 
 publishing {
